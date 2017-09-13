@@ -62,36 +62,41 @@ ui <- (pageWithSidebar(
   mainPanel(
           
           tabsetPanel(
-                  tabPanel("Tab 1"),
-                  tabPanel("Tab 2"),
-                  tabPanel("Tab 3")
-          ),
-          
-    #paste("Figure 1. Prediction based on baseline FEV1"),
-    plotOutput("figure"),
-    br(),
-    br(),
-    br(),
-    br(),
-    tableOutput("prob_decliner"),
-    br(),
-    br(),
-    br(),
-    br(),
-    h4("This table quantifies heterogeneity. Please note that Coefficient of Variation (CV) is a measure of heterogeneity calculated
+                  type = "tabs",
+                  tabPanel("Plot", plotOutput("figure"), tableOutput("prob_decliner")),
+                  tabPanel("Table: Hetero", 
+h4("This table quantifies heterogeneity. Please note that Coefficient of Variation (CV) is a measure of heterogeneity calculated
 			 by the ratio of standard deviation to the mean FEV1 decline (i.e., it represents noise to signal ratio). In this table CV is shown
 			 at different years. For instance, CV for year 2 represents the amount of heterogeneity around mean FEV1 decline over 2 years."),
-    br(),
-    tableOutput("cv"),
-    br(),
-    br(),
-    br(),
-    br(),
-    plotOutput("severity"),
-    br(),
-    br(),
-    tableOutput("sevTab")
- 
+                           tableOutput("cv")),
+                  tabPanel("Table: GOLD rule", plotOutput("severity"), tableOutput("sevTab"))
+          )
+          
+#     #paste("Figure 1. Prediction based on baseline FEV1"),
+#     plotOutput("figure"),
+#     br(),
+#     br(),
+#     br(),
+#     br(),
+#     tableOutput("prob_decliner"),
+#     br(),
+#     br(),
+#     br(),
+#     br(),
+#     h4("This table quantifies heterogeneity. Please note that Coefficient of Variation (CV) is a measure of heterogeneity calculated
+# 			 by the ratio of standard deviation to the mean FEV1 decline (i.e., it represents noise to signal ratio). In this table CV is shown
+# 			 at different years. For instance, CV for year 2 represents the amount of heterogeneity around mean FEV1 decline over 2 years."),
+#     br(),
+#     tableOutput("cv"),
+#     br(),
+#     br(),
+#     br(),
+#     br(),
+#     plotOutput("severity"),
+#     br(),
+#     br(),
+#     tableOutput("sevTab")
+#  
   )
   
     ))
