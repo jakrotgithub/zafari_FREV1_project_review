@@ -11,33 +11,33 @@ ui <- (pageWithSidebar(
   
   sidebarPanel(
     
-    h4("Developed by Zafar Zafari"),
-    h5("This web application is based on the paper entitled 'Individualised prediction of lung function decline in COPD'. 
-       Authors: Zafar Zafari, Don D. Sin, Dirkje S. Postma, Claes-Goran Lofdahl, Judith Vonk, Stirling Bryan, Rahman Khakban,
-       S.F. Paul Man, Donald Tashkin, Robert A. Wise, John E. Connett, Bruce McManus, MD, Raymond Ng, Zsuszanna Hollander, 
-       Mohsen Sadatsafavi. Please cite this paper when using the results of this web application."),
-    
-    
-    br(),
-    br(),
-    
-    h4("About this Web Application"),
-    
-    #br() and hr() produce extra horizontal space, and hr()>br()
-    
-    h5("This web application is built for the individualized prediction of lung function decline based on 3 models: 
-       (1) Prediction of future lung function decline based on baseline FEV1, 
-       (2) Prediction of future lung function decline based on baseline FEV1 and patients' clinical characteristics,
-       and (3) Prediction of future lung function decline based on baseline FEV1, patients' clinical characteristics,
-       and 1-year prior history of FEV1. Interested model as well as other patient's characteristics can be selected
-       below for seeing the predicted rate of lung function delcine."),
-    
-    
-    br(),
-    br(),
-    br(),
-    br(),
-    
+    # h4("Developed by Zafar Zafari"),
+    # h5("This web application is based on the paper entitled 'Individualised prediction of lung function decline in COPD'. 
+    #    Authors: Zafar Zafari, Don D. Sin, Dirkje S. Postma, Claes-Goran Lofdahl, Judith Vonk, Stirling Bryan, Rahman Khakban,
+    #    S.F. Paul Man, Donald Tashkin, Robert A. Wise, John E. Connett, Bruce McManus, MD, Raymond Ng, Zsuszanna Hollander, 
+    #    Mohsen Sadatsafavi. Please cite this paper when using the results of this web application."),
+    # 
+    # 
+    # br(),
+    # br(),
+    # 
+    # h4("About this Web Application"),
+    # 
+    # #br() and hr() produce extra horizontal space, and hr()>br()
+    # 
+    # h5("This web application is built for the individualized prediction of lung function decline based on 3 models: 
+    #    (1) Prediction of future lung function decline based on baseline FEV1, 
+    #    (2) Prediction of future lung function decline based on baseline FEV1 and patients' clinical characteristics,
+    #    and (3) Prediction of future lung function decline based on baseline FEV1, patients' clinical characteristics,
+    #    and 1-year prior history of FEV1. Interested model as well as other patient's characteristics can be selected
+    #    below for seeing the predicted rate of lung function delcine."),
+    # 
+    # 
+    # br(),
+    # br(),
+    # br(),
+    # br(),
+    # 
     
     selectInput('model', 'Please select your model', c("Basic model with only baseline FEV1", "Complete model with baseline FEV1 and patient's characteristics", 
                                                        "Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)", 
@@ -63,13 +63,27 @@ ui <- (pageWithSidebar(
           
           tabsetPanel(
                   type = "tabs",
-                  tabPanel("Plot", plotOutput("figure"), tableOutput("prob_decliner")),
-                  tabPanel("Table: Hetero", 
-h4("This table quantifies heterogeneity. Please note that Coefficient of Variation (CV) is a measure of heterogeneity calculated
+                  tabPanel("FEV1 Projection", plotOutput("figure"), tableOutput("prob_decliner")),
+                   tabPanel("GOLD Grade", plotOutput("severity"), tableOutput("sevTab")),
+                  tabPanel("Heterogeneity", 
+                  h4("This table quantifies heterogeneity. Please note that Coefficient of Variation (CV) is a measure of heterogeneity calculated
 			 by the ratio of standard deviation to the mean FEV1 decline (i.e., it represents noise to signal ratio). In this table CV is shown
 			 at different years. For instance, CV for year 2 represents the amount of heterogeneity around mean FEV1 decline over 2 years."),
                            tableOutput("cv")),
-                  tabPanel("Table: GOLD rule", plotOutput("severity"), tableOutput("sevTab"))
+                  tabPanel("Web Application Description", 
+                           h4("About this Web Application"),
+                           h5("This web application is built for the individualized prediction of lung function decline based on 3 models:"), 
+       h5("(1) Prediction of future lung function decline based on baseline FEV1,"), 
+       h5("(2) Prediction of future lung function decline based on baseline FEV1 and patients' clinical characteristics, &"),
+       h5("(3) Prediction of future lung function decline based on baseline FEV1, patients' clinical characteristics,
+       and 1-year prior history of FEV1. Interested model as well as other patient's characteristics can be selected
+       below for seeing the predicted rate of lung function decline.")),
+                  tabPanel("Disclaimer",  
+                           h4("Developed by Zafar Zafari"),
+                           h5("This web application is based on the paper entitled 'Individualised prediction of lung function decline in COPD'. 
+       Authors: Zafar Zafari, Don D. Sin, Dirkje S. Postma, Claes-Goran Lofdahl, Judith Vonk, Stirling Bryan, Rahman Khakban,
+       S.F. Paul Man, Donald Tashkin, Robert A. Wise, John E. Connett, Bruce McManus, MD, Raymond Ng, Zsuszanna Hollander, 
+       Mohsen Sadatsafavi. Please cite this paper when using the results of this web application."))
           )
           
 #     #paste("Figure 1. Prediction based on baseline FEV1"),
@@ -118,7 +132,7 @@ server <- (function(input, output) {
 		{
  			list(numericInput('fev1_0', 'FEV1 at baseline (L)', 2.75, min=1.25, max=3.55),
 
- 			numericInput('int_effect', 'If the patient is going to use a new intervention, please indicate the effect of the new intervention relative to his/her current therapy on initial improvement in lung function (L). If you only want to model the natural course of disease progression irrespective of specific interevntion, please select 0 in here.', 0, min=0, max=0.1))
+ 			numericInput('int_effect', 'If the patient is going to use a new intervention, please indicate the effect of the new intervention relative to his/her current therapy on initial improvement in lung function (L). If you only want to model the natural course of disease progression irrespective of specific intervention, please select 0 in here.', 0, min=0, max=0.1))
 
 			
 
