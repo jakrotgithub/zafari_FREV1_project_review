@@ -70,21 +70,21 @@ ui <- (pageWithSidebar(
 			 by the ratio of standard deviation to the mean FEV1 decline (i.e., it represents noise to signal ratio). In this table CV is shown
 			 at different years. For instance, CV for year 2 represents the amount of heterogeneity around mean FEV1 decline over 2 years."),
                            tableOutput("cv")),
-                  tabPanel("Web Application Description", 
+                  tabPanel("About", 
                            h4("About this Web Application"),
                            h5("This web application is built for the individualized prediction of lung function decline based on 3 models:"), 
        h5("(1) Prediction of future lung function decline based on baseline FEV1,"), 
        h5("(2) Prediction of future lung function decline based on baseline FEV1 and patients' clinical characteristics, &"),
        h5("(3) Prediction of future lung function decline based on baseline FEV1, patients' clinical characteristics,
        and 1-year prior history of FEV1. Interested model as well as other patient's characteristics can be selected
-       below for seeing the predicted rate of lung function decline.")),
-                  tabPanel("Disclaimer",  
-                           h4("Developed by Zafar Zafari"),
-                           h5("This web application is based on the paper entitled 'Individualised prediction of lung function decline in COPD'. 
-       Authors: Zafar Zafari, Don D. Sin, Dirkje S. Postma, Claes-Goran Lofdahl, Judith Vonk, Stirling Bryan, Rahman Khakban,
-       S.F. Paul Man, Donald Tashkin, Robert A. Wise, John E. Connett, Bruce McManus, MD, Raymond Ng, Zsuszanna Hollander, 
-       Mohsen Sadatsafavi. Please cite this paper when using the results of this web application."))
-          )
+       below for seeing the predicted rate of lung function decline."),
+       h4("Developed by Zafar Zafari"),
+       h5("This web application is based on the paper entitled 'Individualised prediction of lung function decline in COPD'. 
+          Authors: Zafar Zafari, Don D. Sin, Dirkje S. Postma, Claes-Goran Lofdahl, Judith Vonk, Stirling Bryan, Rahman Khakban,
+          S.F. Paul Man, Donald Tashkin, Robert A. Wise, John E. Connett, Bruce McManus, MD, Raymond Ng, Zsuszanna Hollander, 
+          Mohsen Sadatsafavi. Please cite this paper when using the results of this web application."))
+       )
+
           
 #     #paste("Figure 1. Prediction based on baseline FEV1"),
 #     plotOutput("figure"),
