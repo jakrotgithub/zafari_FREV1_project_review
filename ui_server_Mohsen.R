@@ -1497,11 +1497,14 @@ server <- (function(input, output) {
 
 
 			dat_sev<-table(stage,year)
-			data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]))
+			data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
+			                   severe=as.numeric(dat_sev[3,]))
 			
 			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
 			  add_trace(y = ~moderate, name='Moderate') %>%
-			  layout(yaxis=list(title='Probablitiy (%)'), barmode='stack', xaxis=list(title='Year'),
+			  add_trace(y = ~severe, name='Severe') %>%
+			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year', type='category',
+			                                                                          categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade')
 		
 
@@ -1654,11 +1657,14 @@ server <- (function(input, output) {
 
 
 			dat_sev<-table(stage,year)
-			data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]))
+			data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
+			                   severe=as.numeric(dat_sev[3,]))
 			
 			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
 			  add_trace(y = ~moderate, name='Moderate') %>%
-			  layout(yaxis=list(title='Probablitiy (%)'), barmode='stack', xaxis=list(title='Year'),
+			  add_trace(y = ~severe, name='Severe') %>%
+			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year', type='category',
+			                                                                          categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade')
 
 			print(p)
@@ -1813,11 +1819,14 @@ server <- (function(input, output) {
 
 
 			dat_sev<-table(stage,year)
-			data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]))
+			data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
+			                   severe=as.numeric(dat_sev[3,]))
 			
 			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
 			  add_trace(y = ~moderate, name='Moderate') %>%
-			  layout(yaxis=list(title='Probablitiy (%)'), barmode='stack', xaxis=list(title='Year'),
+			  add_trace(y = ~severe, name="Severe") %>%
+			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year',type='category',
+			                                                                             categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade')
 			
 			print(p)
@@ -1858,8 +1867,7 @@ server <- (function(input, output) {
 			
 			obs<-c(input$fev1_prev,input$fev1_0)
 			
-			for (i in 1:11)
-			{
+			for (i in 1:11){
 			  t1 <- i
 			  
 			  beta_x <- -0.00519*input$age + 0.4625*gender + -0.00011*input$weight + -1.7603*input$height + 1.8931*input$height*input$height + 
@@ -1967,11 +1975,15 @@ server <- (function(input, output) {
 					)
 
 			dat_sev<-table(stage,year)
-			data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]))
+			data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
+			                   severe=as.numeric(dat_sev[3,]))
+			print(data)
 			
 			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
 			  add_trace(y = ~moderate, name='Moderate') %>%
-			  layout(yaxis=list(title='Probablitiy (%)'), barmode='stack', xaxis=list(title='Year'),
+			  add_trace(y = ~severe, name='Severe') %>%
+			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year', type='category',
+			                                                                          categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade')
 			
 			
@@ -2091,6 +2103,7 @@ server <- (function(input, output) {
 			u1[3,]<-p_severe
 			rownames(u1)<-c("Probability of being mild", "Probability of being moderate", "Probability of being severe")
 			colnames(u1)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+			print(u1)
 			return(u1)
 			
 
@@ -2406,7 +2419,8 @@ server <- (function(input, output) {
 			colnames(u4)<-c('Previous year', 'Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
 			return(u4)
 		}
-	})
+	},
+	include.rownames=T)
 })
 
 shinyApp(ui = ui, server = server)
