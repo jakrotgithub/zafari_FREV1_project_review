@@ -6,11 +6,11 @@ library(plotly)
 
 # Define UI for dataset viewer application
 ui <- fluidPage(
-  #tags$head(tags$style("#text1{color: red;
-          #                       font-size: 20px;
-          #             font-style: italic;
-             #          }"
-  #                       )),
+  tags$head(tags$style("#prob_decliner{color: red;
+                        font-size: 20px;
+              font-style: italic;
+           }"
+                        )),
   titlePanel("Individualized Prediction of FEV1"),
   
   sidebarLayout(
@@ -72,7 +72,7 @@ ui <- fluidPage(
           tabsetPanel(
                   type = "tabs",
                   tabPanel("FEV1 Projection", plotlyOutput("figure"), br(), br(), textOutput("prob_decliner")),
-                   tabPanel("GOLD Grade", plotOutput("severity"), tableOutput("sevTab")),
+                  tabPanel("GOLD Grade", br(), br(), plotlyOutput("severity"), tableOutput("sevTab")),
                   tabPanel("Heterogeneity", 
                   h4("This table quantifies heterogeneity. Please note that Coefficient of Variation (CV) is a measure of heterogeneity calculated
 			 by the ratio of standard deviation to the mean FEV1 decline (i.e., it represents noise to signal ratio). In this table CV is shown
@@ -1383,7 +1383,7 @@ server <- (function(input, output) {
 
 
 
-	output$severity<-renderPlot({
+	output$severity<-renderPlotly({
 
 		if (!is.null(input$fev1_0) & input$model=="Basic model with only baseline FEV1")
 		{
@@ -1497,15 +1497,21 @@ server <- (function(input, output) {
 
 
 			dat_sev<-table(stage,year)
-		
+			data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]))
 			
+			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
+			  add_trace(y = ~moderate, name='Moderate') %>%
+			  layout(yaxis=list(title='Probablitiy (%)'), barmode='stack', xaxis=list(title='Year'),
+			         title='Probability of the selected patient being at each GOLD grade')
+		
 
-			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
-  					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
- 					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
-					args.legend = list(x ="topleft")
-					)
 
+# 			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
+#   					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
+#  					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
+# 					args.legend = list(x ="topleft")
+# 					)
+    print(p)
 
 
 
@@ -1648,12 +1654,22 @@ server <- (function(input, output) {
 
 
 			dat_sev<-table(stage,year)
+			data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]))
+			
+			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
+			  add_trace(y = ~moderate, name='Moderate') %>%
+			  layout(yaxis=list(title='Probablitiy (%)'), barmode='stack', xaxis=list(title='Year'),
+			         title='Probability of the selected patient being at each GOLD grade')
+
+			print(p)
+			
+			
 		
-			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
-  					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
- 					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
-					args.legend = list(x ="topleft")
-					)
+# 			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
+#   					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
+#  					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
+# 					args.legend = list(x ="topleft")
+# 					)
 
 
 
@@ -1797,12 +1813,14 @@ server <- (function(input, output) {
 
 
 			dat_sev<-table(stage,year)
-		
-			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
-  					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
- 					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
-					args.legend = list(x ="topleft")
-					)
+			data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]))
+			
+			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
+			  add_trace(y = ~moderate, name='Moderate') %>%
+			  layout(yaxis=list(title='Probablitiy (%)'), barmode='stack', xaxis=list(title='Year'),
+			         title='Probability of the selected patient being at each GOLD grade')
+			
+			print(p)
 
 
 
@@ -1949,12 +1967,21 @@ server <- (function(input, output) {
 					)
 
 			dat_sev<-table(stage,year)
-		
-			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
-  					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
- 					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
-					args.legend = list(x ="topleft")
-					)
+			data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]))
+			
+			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
+			  add_trace(y = ~moderate, name='Moderate') %>%
+			  layout(yaxis=list(title='Probablitiy (%)'), barmode='stack', xaxis=list(title='Year'),
+			         title='Probability of the selected patient being at each GOLD grade')
+			
+			
+			
+			# 			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
+			#   					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
+			#  					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
+			# 					args.legend = list(x ="topleft")
+			# 					)
+			print(p)
 		}
 	})
 
