@@ -1165,8 +1165,10 @@ server <- (function(input, output) {
 			n_sd2<-((fev1_avg[12]-input$fev1_0)/11-(fev1_low[12]-input$fev1_0)/11)/1.96*1000
 
 			bb2<-data.frame(round(pnorm(-40, n_mean2, n_sd2)*100,0))
-			colnames(bb2)<-'Probability that this patient will be a rapid decliner over the next 11 years (declines more than 40 ml/year) (%)'
-
+			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years 
+			(declines more than 40 ml/year): '
+			bb2 <- paste0(prob_text, as.numeric(bb2), "%")
+			
 			return(bb2)
 
 
@@ -1257,7 +1259,10 @@ server <- (function(input, output) {
 			n_sd3<-((fev1_avg[12]-input$fev1_0)/11-(fev1_low[12]-input$fev1_0)/11)/1.96*1000
 
 			bb3<-data.frame(round(pnorm(-40, n_mean3, n_sd3)*100,0))
-			colnames(bb3)<-'Probability that this patient will be a rapid decliner over the next 11 years (declines more than 40 ml/year) (%)'
+
+			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years 
+			(declines more than 40 ml/year): '
+			bb3 <- paste0(prob_text, as.numeric(bb3), "%")
 
 			return(bb3)
 
@@ -1356,8 +1361,10 @@ server <- (function(input, output) {
 			n_sd4<-((fev1_avg[13]-input$fev1_prev)/12-(fev1_low[13]-input$fev1_prev)/12)/1.96*1000
 
 			bb4<-data.frame(round(pnorm(-40, n_mean4, n_sd4)*100,0))
-			colnames(bb4)<-'Probability that this patient will be a rapid decliner over the next 11 years (declines more than 40 ml/year) (%)'
 
+			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years 
+			  (declines more than 40 ml/year): '
+			bb4 <- paste0(prob_text, as.numeric(bb4), "%")
 			return(bb4)
 		}
 	})
