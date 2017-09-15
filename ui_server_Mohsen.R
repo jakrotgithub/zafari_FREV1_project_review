@@ -1,15 +1,23 @@
 library(shiny)
 library(ggplot2)
+library(plotly)
 #devtools::install_github("shiny", "rstudio")
 #library(shiny)
 
 # Define UI for dataset viewer application
-ui <- (pageWithSidebar(
+ui <- fluidPage(
+  #tags$head(tags$style("#text1{color: red;
+          #                       font-size: 20px;
+          #             font-style: italic;
+             #          }"
+  #                       )),
+  titlePanel("Individualized Prediction of FEV1"),
   
-  headerPanel("Individualized Prediction of FEV1"),
+  sidebarLayout(
   
   
-  sidebarPanel(
+  
+    sidebarPanel(
     
     # h4("Developed by Zafar Zafari"),
     # h5("This web application is based on the paper entitled 'Individualised prediction of lung function decline in COPD'. 
@@ -63,7 +71,7 @@ ui <- (pageWithSidebar(
           
           tabsetPanel(
                   type = "tabs",
-                  tabPanel("FEV1 Projection", plotOutput("figure"), tableOutput("prob_decliner")),
+                  tabPanel("FEV1 Projection", plotlyOutput("figure"), br(), br(), textOutput("prob_decliner")),
                    tabPanel("GOLD Grade", plotOutput("severity"), tableOutput("sevTab")),
                   tabPanel("Heterogeneity", 
                   h4("This table quantifies heterogeneity. Please note that Coefficient of Variation (CV) is a measure of heterogeneity calculated
@@ -114,6 +122,7 @@ ui <- (pageWithSidebar(
   )
   
     ))
+
 
 
 
@@ -230,7 +239,7 @@ server <- (function(input, output) {
 
 
 
-	output$figure<-renderPlot({
+	output$figure<-renderPlotly({
 
 		if (!is.null(input$fev1_0) & input$model=="Basic model with only baseline FEV1")
 		{
@@ -288,16 +297,20 @@ server <- (function(input, output) {
 			fev1_low<-fev1_avg-1.96*sqrt(vari)
 
 			df<-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
+			names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
+      print(names(df))
 
+			p<-ggplot(df, aes(Time, FEV1))
+			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			  geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
+			  geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
+			  annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
+			  annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
+			  labs(x="Time (years)", y="FEV1 (L)") +
+			  theme_bw()
 
-			p<-ggplot(df, aes(x, y))
-			plot(p + geom_line(aes(y = y), color="black", linetype=1) +
-   			geom_line(aes(y = fev1_low), color="red", linetype=2) +
-    			geom_line(aes(y = fev1_up), color="red", linetype=2) +
-   			annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-    			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
-    			labs(x="Time (years)", y="FEV1 (L)") +
-   			theme_bw())
+			p2 <- ggplotly(p)
+			print(p2)
 
 
 
@@ -386,17 +399,19 @@ server <- (function(input, output) {
 			fev1_low<-fev1_avg-1.96*sqrt(vari)
 
 			df<-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
+			names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
 
-
-
-			p<-ggplot(df, aes(x, y))
-			plot(p + geom_line(aes(y = y), color="black", linetype=1) +
-   			  geom_line(aes(y = fev1_low), color="red", linetype=2) +
-    			geom_line(aes(y = fev1_up), color="red", linetype=2) +
+			p<-ggplot(df, aes(Time, FEV1))
+			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+   			  geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
+    			geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
    			  annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
     			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
     			labs(x="Time (years)", y="FEV1 (L)") +
-   			theme_bw())
+   			theme_bw()
+			
+			p2 <- ggplotly(p)
+			print(p2)
 
 
 
@@ -486,16 +501,20 @@ server <- (function(input, output) {
 			fev1_low<-fev1_avg-1.96*sqrt(vari)
 
 			df<-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
+			names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
+			
 
-
-			p<-ggplot(df, aes(x, y))
-			plot(p + geom_line(aes(y = y), color="black", linetype=1) +
-   			geom_line(aes(y = fev1_low), color="red", linetype=2) +
-    			geom_line(aes(y = fev1_up), color="red", linetype=2) +
+			p<-ggplot(df, aes(Time, FEV1))
+			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+   			geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
+    			geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
    			annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
     			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
     			labs(x="Time (years)", y="FEV1 (L)") +
-   			theme_bw())
+   			theme_bw()
+			
+			p2 <- ggplotly(p)
+			print(p2)
 
 
 
@@ -591,16 +610,20 @@ server <- (function(input, output) {
 			fev1_low<-fev1_avg-1.96*sqrt(vari)
 
 			df<-data.frame(x, y=fev1_avg, fev1_low, fev1_up)
-
-
-			p<-ggplot(df, aes(x, y))
-			plot(p + geom_line(aes(y = y), color="black", linetype=1) +
-   			geom_line(aes(y = fev1_low), color="red", linetype=2) +
-    			geom_line(aes(y = fev1_up), color="red", linetype=2) +
-   			annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-    			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
-    			labs(x="Time (years)", y="FEV1 (L)") +
-   			theme_bw())
+			names(df) <- c("Time", "FEV1", "FEV1_lower", "FEV1_upper")
+			
+			
+			p<-ggplot(df, aes(Time, FEV1))
+			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			       geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
+			       geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
+			       annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
+			       annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
+			       labs(x="Time (years)", y="FEV1 (L)") +
+			       theme_bw()
+			
+			p2 <- ggplotly(p)
+			print(p2)
 		}
 
 	})
@@ -989,36 +1012,7 @@ server <- (function(input, output) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	output$prob_decliner<-renderTable({
+	output$prob_decliner<-renderText({
 
 		if (!is.null(input$fev1_0) & input$model=="Basic model with only baseline FEV1")
 		{
@@ -1078,8 +1072,10 @@ server <- (function(input, output) {
 			n_sd1<-((fev1_avg[12]-input$fev1_0)/11-(fev1_low[12]-input$fev1_0)/11)/1.96*1000
 
 			bb1<-data.frame(round(pnorm(-40, n_mean1, n_sd1)*100,0))
-			colnames(bb1)<-'Probability that this patient will be a rapid decliner over the next 11 years (declines more than 40 ml/year) (%)'
-
+			print(bb1)
+			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years 
+			  (declines more than 40 ml/year): '
+      bb1 <- paste0(prob_text, as.numeric(bb1), "%")
 			return(bb1)
 
 
