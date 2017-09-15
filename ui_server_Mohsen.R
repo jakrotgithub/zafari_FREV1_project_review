@@ -1,15 +1,22 @@
 library(shiny)
 library(ggplot2)
+library(plotly)
 #devtools::install_github("shiny", "rstudio")
 #library(shiny)
 
 # Define UI for dataset viewer application
-ui <- (pageWithSidebar(
+ui <- fluidPage(
+  tags$head(tags$style("#prob_decliner{color: black;
+                        font-size: 16px;
+           }"
+                        )),
+  titlePanel("Individualized Prediction of FEV1"),
   
-  headerPanel("Individualized Prediction of FEV1"),
+  sidebarLayout(
   
   
-  sidebarPanel(
+  
+    sidebarPanel(
     
     # h4("Developed by Zafar Zafari"),
     # h5("This web application is based on the paper entitled 'Individualised prediction of lung function decline in COPD'. 
@@ -63,13 +70,12 @@ ui <- (pageWithSidebar(
           
           tabsetPanel(
                   type = "tabs",
-                  tabPanel("FEV1 Projection", plotOutput("figure"), tableOutput("prob_decliner")),
-                   tabPanel("GOLD Grade", plotOutput("severity"), tableOutput("sevTab")),
-                  tabPanel("Heterogeneity", 
+                  tabPanel("FEV1 Projection", plotlyOutput("figure"), br(), br(), textOutput("prob_decliner")),
+                  tabPanel("GOLD Grade", br(), br(), plotlyOutput("severity"), tableOutput("sevTab")),
+                  tabPanel("Heterogeneity", br(), br(), tableOutput("cv"), br(),
                   h4("This table quantifies heterogeneity. Please note that Coefficient of Variation (CV) is a measure of heterogeneity calculated
 			 by the ratio of standard deviation to the mean FEV1 decline (i.e., it represents noise to signal ratio). In this table CV is shown
-			 at different years. For instance, CV for year 2 represents the amount of heterogeneity around mean FEV1 decline over 2 years."),
-                           tableOutput("cv")),
+			 at different years. For instance, CV for year 2 represents the amount of heterogeneity around mean FEV1 decline over 2 years.")),
                   tabPanel("About", 
                            h4("About this Web Application"),
                            h5("This web application is built for the individualized prediction of lung function decline based on 3 models:"), 
@@ -114,6 +120,7 @@ ui <- (pageWithSidebar(
   )
   
     ))
+
 
 
 
@@ -230,7 +237,7 @@ server <- (function(input, output) {
 
 
 
-	output$figure<-renderPlot({
+	output$figure<-renderPlotly({
 
 		if (!is.null(input$fev1_0) & input$model=="Basic model with only baseline FEV1")
 		{
@@ -288,16 +295,20 @@ server <- (function(input, output) {
 			fev1_low<-fev1_avg-1.96*sqrt(vari)
 
 			df<-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
+			names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
+      print(names(df))
 
+			p<-ggplot(df, aes(Time, FEV1))
+			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			  geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
+			  geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
+			  annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
+			  annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
+			  labs(x="Time (years)", y="FEV1 (L)") +
+			  theme_bw()
 
-			p<-ggplot(df, aes(x, y))
-			plot(p + geom_line(aes(y = y), color="black", linetype=1) +
-   			geom_line(aes(y = fev1_low), color="red", linetype=2) +
-    			geom_line(aes(y = fev1_up), color="red", linetype=2) +
-   			annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-    			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
-    			labs(x="Time (years)", y="FEV1 (L)") +
-   			theme_bw())
+			p2 <- ggplotly(p)
+			print(p2)
 
 
 
@@ -386,17 +397,19 @@ server <- (function(input, output) {
 			fev1_low<-fev1_avg-1.96*sqrt(vari)
 
 			df<-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
+			names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
 
-
-
-			p<-ggplot(df, aes(x, y))
-			plot(p + geom_line(aes(y = y), color="black", linetype=1) +
-   			  geom_line(aes(y = fev1_low), color="red", linetype=2) +
-    			geom_line(aes(y = fev1_up), color="red", linetype=2) +
+			p<-ggplot(df, aes(Time, FEV1))
+			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+   			  geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
+    			geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
    			  annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
     			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
     			labs(x="Time (years)", y="FEV1 (L)") +
-   			theme_bw())
+   			theme_bw()
+			
+			p2 <- ggplotly(p)
+			print(p2)
 
 
 
@@ -486,16 +499,20 @@ server <- (function(input, output) {
 			fev1_low<-fev1_avg-1.96*sqrt(vari)
 
 			df<-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
+			names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
+			
 
-
-			p<-ggplot(df, aes(x, y))
-			plot(p + geom_line(aes(y = y), color="black", linetype=1) +
-   			geom_line(aes(y = fev1_low), color="red", linetype=2) +
-    			geom_line(aes(y = fev1_up), color="red", linetype=2) +
+			p<-ggplot(df, aes(Time, FEV1))
+			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+   			geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
+    			geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
    			annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
     			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
     			labs(x="Time (years)", y="FEV1 (L)") +
-   			theme_bw())
+   			theme_bw()
+			
+			p2 <- ggplotly(p)
+			print(p2)
 
 
 
@@ -591,16 +608,20 @@ server <- (function(input, output) {
 			fev1_low<-fev1_avg-1.96*sqrt(vari)
 
 			df<-data.frame(x, y=fev1_avg, fev1_low, fev1_up)
-
-
-			p<-ggplot(df, aes(x, y))
-			plot(p + geom_line(aes(y = y), color="black", linetype=1) +
-   			geom_line(aes(y = fev1_low), color="red", linetype=2) +
-    			geom_line(aes(y = fev1_up), color="red", linetype=2) +
-   			annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-    			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
-    			labs(x="Time (years)", y="FEV1 (L)") +
-   			theme_bw())
+			names(df) <- c("Time", "FEV1", "FEV1_lower", "FEV1_upper")
+			
+			
+			p<-ggplot(df, aes(Time, FEV1))
+			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			       geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
+			       geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
+			       annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
+			       annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
+			       labs(x="Time (years)", y="FEV1 (L)") +
+			       theme_bw()
+			
+			p2 <- ggplotly(p)
+			print(p2)
 		}
 
 	})
@@ -985,40 +1006,14 @@ server <- (function(input, output) {
 
 			return(aa4)
 		}
-	})
+	}, 
+	include.rownames=T,
+	caption="FEV1 Heterogeneity",
+	caption.placement = getOption("xtable.caption.placement", "top"))
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	output$prob_decliner<-renderTable({
+	output$prob_decliner<-renderText({
 
 		if (!is.null(input$fev1_0) & input$model=="Basic model with only baseline FEV1")
 		{
@@ -1078,8 +1073,10 @@ server <- (function(input, output) {
 			n_sd1<-((fev1_avg[12]-input$fev1_0)/11-(fev1_low[12]-input$fev1_0)/11)/1.96*1000
 
 			bb1<-data.frame(round(pnorm(-40, n_mean1, n_sd1)*100,0))
-			colnames(bb1)<-'Probability that this patient will be a rapid decliner over the next 11 years (declines more than 40 ml/year) (%)'
-
+			print(bb1)
+			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years 
+			  (declines more than 40 ml/year): '
+      bb1 <- paste0(prob_text, as.numeric(bb1), "%")
 			return(bb1)
 
 
@@ -1169,8 +1166,10 @@ server <- (function(input, output) {
 			n_sd2<-((fev1_avg[12]-input$fev1_0)/11-(fev1_low[12]-input$fev1_0)/11)/1.96*1000
 
 			bb2<-data.frame(round(pnorm(-40, n_mean2, n_sd2)*100,0))
-			colnames(bb2)<-'Probability that this patient will be a rapid decliner over the next 11 years (declines more than 40 ml/year) (%)'
-
+			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years 
+			(declines more than 40 ml/year): '
+			bb2 <- paste0(prob_text, as.numeric(bb2), "%")
+			
 			return(bb2)
 
 
@@ -1261,7 +1260,10 @@ server <- (function(input, output) {
 			n_sd3<-((fev1_avg[12]-input$fev1_0)/11-(fev1_low[12]-input$fev1_0)/11)/1.96*1000
 
 			bb3<-data.frame(round(pnorm(-40, n_mean3, n_sd3)*100,0))
-			colnames(bb3)<-'Probability that this patient will be a rapid decliner over the next 11 years (declines more than 40 ml/year) (%)'
+
+			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years 
+			(declines more than 40 ml/year): '
+			bb3 <- paste0(prob_text, as.numeric(bb3), "%")
 
 			return(bb3)
 
@@ -1360,8 +1362,10 @@ server <- (function(input, output) {
 			n_sd4<-((fev1_avg[13]-input$fev1_prev)/12-(fev1_low[13]-input$fev1_prev)/12)/1.96*1000
 
 			bb4<-data.frame(round(pnorm(-40, n_mean4, n_sd4)*100,0))
-			colnames(bb4)<-'Probability that this patient will be a rapid decliner over the next 11 years (declines more than 40 ml/year) (%)'
 
+			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years 
+			  (declines more than 40 ml/year): '
+			bb4 <- paste0(prob_text, as.numeric(bb4), "%")
 			return(bb4)
 		}
 	})
@@ -1387,7 +1391,7 @@ server <- (function(input, output) {
 
 
 
-	output$severity<-renderPlot({
+	output$severity<-renderPlotly({
 
 		if (!is.null(input$fev1_0) & input$model=="Basic model with only baseline FEV1")
 		{
@@ -1501,15 +1505,24 @@ server <- (function(input, output) {
 
 
 			dat_sev<-table(stage,year)
-		
+			data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
+			                   severe=as.numeric(dat_sev[3,]))
 			
+			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
+			  add_trace(y = ~moderate, name='Moderate') %>%
+			  add_trace(y = ~severe, name='Severe') %>%
+			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year', type='category',
+			                                                                          categoryorder='trace'),
+			         title='Probability of the selected patient being at each GOLD grade')
+		
 
-			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
-  					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
- 					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
-					args.legend = list(x ="topleft")
-					)
 
+# 			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
+#   					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
+#  					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
+# 					args.legend = list(x ="topleft")
+# 					)
+    print(p)
 
 
 
@@ -1652,12 +1665,25 @@ server <- (function(input, output) {
 
 
 			dat_sev<-table(stage,year)
+			data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
+			                   severe=as.numeric(dat_sev[3,]))
+			
+			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
+			  add_trace(y = ~moderate, name='Moderate') %>%
+			  add_trace(y = ~severe, name='Severe') %>%
+			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year', type='category',
+			                                                                          categoryorder='trace'),
+			         title='Probability of the selected patient being at each GOLD grade')
+
+			print(p)
+			
+			
 		
-			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
-  					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
- 					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
-					args.legend = list(x ="topleft")
-					)
+# 			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
+#   					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
+#  					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
+# 					args.legend = list(x ="topleft")
+# 					)
 
 
 
@@ -1801,12 +1827,17 @@ server <- (function(input, output) {
 
 
 			dat_sev<-table(stage,year)
-		
-			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
-  					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
- 					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
-					args.legend = list(x ="topleft")
-					)
+			data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
+			                   severe=as.numeric(dat_sev[3,]))
+			
+			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
+			  add_trace(y = ~moderate, name='Moderate') %>%
+			  add_trace(y = ~severe, name="Severe") %>%
+			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year',type='category',
+			                                                                             categoryorder='trace'),
+			         title='Probability of the selected patient being at each GOLD grade')
+			
+			print(p)
 
 
 
@@ -1844,8 +1875,7 @@ server <- (function(input, output) {
 			
 			obs<-c(input$fev1_prev,input$fev1_0)
 			
-			for (i in 1:11)
-			{
+			for (i in 1:11){
 			  t1 <- i
 			  
 			  beta_x <- -0.00519*input$age + 0.4625*gender + -0.00011*input$weight + -1.7603*input$height + 1.8931*input$height*input$height + 
@@ -1953,12 +1983,25 @@ server <- (function(input, output) {
 					)
 
 			dat_sev<-table(stage,year)
-		
-			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
-  					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
- 					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
-					args.legend = list(x ="topleft")
-					)
+			data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
+			                   severe=as.numeric(dat_sev[3,]))
+			print(data)
+			
+			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
+			  add_trace(y = ~moderate, name='Moderate') %>%
+			  add_trace(y = ~severe, name='Severe') %>%
+			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year', type='category',
+			                                                                          categoryorder='trace'),
+			         title='Probability of the selected patient being at each GOLD grade')
+			
+			
+			
+			# 			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
+			#   					xlab="Year", ylab="Probability(%)", col=c("green", "yellow", "red")[sort(unique(stage2))+1],
+			#  					legend = c("Mild", "Moderate", "Severe")[sort(unique(stage2))+1],
+			# 					args.legend = list(x ="topleft")
+			# 					)
+			print(p)
 		}
 	})
 
@@ -2068,6 +2111,7 @@ server <- (function(input, output) {
 			u1[3,]<-p_severe
 			rownames(u1)<-c("Probability of being mild", "Probability of being moderate", "Probability of being severe")
 			colnames(u1)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+			print(u1)
 			return(u1)
 			
 
@@ -2383,7 +2427,8 @@ server <- (function(input, output) {
 			colnames(u4)<-c('Previous year', 'Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
 			return(u4)
 		}
-	})
+	},
+	include.rownames=T)
 })
 
 shinyApp(ui = ui, server = server)
