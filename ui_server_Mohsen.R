@@ -210,33 +210,6 @@ server <- (function(input, output) {
 	})
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	output$figure<-renderPlotly({
 
 		if (!is.null(input$fev1_0) & input$model=="Basic model with only baseline FEV1")
@@ -298,19 +271,13 @@ server <- (function(input, output) {
 			names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
       print(names(df))
 
-			p<-ggplot(df, aes(Time, FEV1))
-			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			p <- ggplotly (ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
 			  geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
 			  geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
 			  annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
 			  annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
 			  labs(x="Time (years)", y="FEV1 (L)") +
-			  theme_bw()
-
-			p2 <- ggplotly(p)
-			print(p2)
-
-
+			  theme_bw()) 
 
 		} else if (!is.null(input$age) & input$model=="Complete model with baseline FEV1 and patient's characteristics")
 
@@ -399,19 +366,14 @@ server <- (function(input, output) {
 			df<-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
 			names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
 
-			p<-ggplot(df, aes(Time, FEV1))
-			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			p <- ggplotly (ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
    			  geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
     			geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
    			  annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
     			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
     			labs(x="Time (years)", y="FEV1 (L)") +
-   			theme_bw()
+   			  theme_bw())
 			
-			p2 <- ggplotly(p)
-			print(p2)
-
-
 
 		} else if (!is.null(input$age) & input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)")
 
@@ -502,17 +464,13 @@ server <- (function(input, output) {
 			names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
 			
 
-			p<-ggplot(df, aes(Time, FEV1))
-			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			p <- ggplotly (ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
    			geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
     			geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
    			annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
     			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
     			labs(x="Time (years)", y="FEV1 (L)") +
-   			theme_bw()
-			
-			p2 <- ggplotly(p)
-			print(p2)
+   			theme_bw())
 
 
 
@@ -611,17 +569,14 @@ server <- (function(input, output) {
 			names(df) <- c("Time", "FEV1", "FEV1_lower", "FEV1_upper")
 			
 			
-			p<-ggplot(df, aes(Time, FEV1))
-			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			p <- ggplotly (ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
 			       geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
 			       geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
 			       annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
 			       annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
 			       labs(x="Time (years)", y="FEV1 (L)") +
-			       theme_bw()
+			       theme_bw())
 			
-			p2 <- ggplotly(p)
-			print(p2)
 		}
 
 	})
@@ -1508,9 +1463,9 @@ server <- (function(input, output) {
 			data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
 			                   severe=as.numeric(dat_sev[3,]))
 			
-			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
-			  add_trace(y = ~moderate, name='Moderate') %>%
-			  add_trace(y = ~severe, name='Severe') %>%
+			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild', marker = list(color = toRGB("#009E73"))) %>%
+			  add_trace(y = ~moderate, name='Moderate', marker = list(color = toRGB("#E69F00"))) %>%
+			  add_trace(y = ~severe, name='Severe', marker = list(color = toRGB("#D55E00"))) %>%
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year', type='category',
 			                                                                          categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade')
@@ -1668,9 +1623,9 @@ server <- (function(input, output) {
 			data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
 			                   severe=as.numeric(dat_sev[3,]))
 			
-			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
-			  add_trace(y = ~moderate, name='Moderate') %>%
-			  add_trace(y = ~severe, name='Severe') %>%
+			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild', marker = list(color = toRGB("#009E73"))) %>%
+			  add_trace(y = ~moderate, name='Moderate', marker = list(color = toRGB("#E69F00"))) %>%
+			  add_trace(y = ~severe, name='Severe', marker = list(color = toRGB("#D55E00"))) %>%
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year', type='category',
 			                                                                          categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade')
@@ -1830,9 +1785,9 @@ server <- (function(input, output) {
 			data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
 			                   severe=as.numeric(dat_sev[3,]))
 			
-			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
-			  add_trace(y = ~moderate, name='Moderate') %>%
-			  add_trace(y = ~severe, name="Severe") %>%
+			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild', marker = list(color = toRGB("#009E73"))) %>%
+			  add_trace(y = ~moderate, name='Moderate', marker = list(color = toRGB("#E69F00"))) %>%
+			  add_trace(y = ~severe, name='Severe', marker = list(color = toRGB("#D55E00"))) %>%
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year',type='category',
 			                                                                             categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade')
@@ -1987,9 +1942,9 @@ server <- (function(input, output) {
 			                   severe=as.numeric(dat_sev[3,]))
 			print(data)
 			
-			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
-			  add_trace(y = ~moderate, name='Moderate') %>%
-			  add_trace(y = ~severe, name='Severe') %>%
+			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild', marker = list(color = toRGB("#009E73"))) %>%
+			  add_trace(y = ~moderate, name='Moderate', marker = list(color = toRGB("#E69F00"))) %>%
+			  add_trace(y = ~severe, name='Severe', marker = list(color = toRGB("#D55E00"))) %>%
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year', type='category',
 			                                                                          categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade')
