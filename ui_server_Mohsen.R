@@ -131,6 +131,7 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- (function(input, output) {
 
+  options(shiny.sanitize.errors=F)
 
 
 	output$inputParam<-renderUI({
@@ -298,17 +299,17 @@ server <- (function(input, output) {
 			names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
       print(names(df))
 
-			p<-ggplot(df, aes(Time, FEV1))
-			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
-			  geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
-			  geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
-			  annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-			  annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
-			  labs(x="Time (years)", y="FEV1 (L)") +
-			  theme_bw()
+			# p<-ggplot(df, aes(Time, FEV1))
+			# p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			#   geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
+			#   geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
+			#   annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
+			#   annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
+			#   labs(x="Time (years)", y="FEV1 (L)") +
+			#   theme_bw()
 
-			p2 <- ggplotly(p)
-			print(p2)
+			#p2 <- plotly::ggplotly(p)
+			#print(p2)
 
 
 
@@ -398,18 +399,21 @@ server <- (function(input, output) {
 
 			df<-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
 			names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
-
-			p<-ggplot(df, aes(Time, FEV1))
-			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
-   			  geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
-    			geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
-   			  annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-    			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
-    			labs(x="Time (years)", y="FEV1 (L)") +
-   			theme_bw()
 			
-			p2 <- ggplotly(p)
-			print(p2)
+			p2 <- plotly_empty()
+# 
+# 			p<-ggplot(df, aes(Time, FEV1))
+# 			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+#    			  geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
+#     			geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
+#    			  annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
+#     			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
+#     			labs(x="Time (years)", y="FEV1 (L)") +
+#    			theme_bw()
+# 
+# 			p2 <- ggplotly(p)
+# 			print(p2)
+			
 
 
 
@@ -502,17 +506,17 @@ server <- (function(input, output) {
 			names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
 			
 
-			p<-ggplot(df, aes(Time, FEV1))
-			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
-   			geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
-    			geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
-   			annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-    			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
-    			labs(x="Time (years)", y="FEV1 (L)") +
-   			theme_bw()
-			
-			p2 <- ggplotly(p)
-			print(p2)
+# 			p<-ggplot(df, aes(Time, FEV1))
+# 			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+#    			geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
+#     			geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
+#    			annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
+#     			annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
+#     			labs(x="Time (years)", y="FEV1 (L)") +
+#    			theme_bw()
+# 			
+# 			p2 <- ggplotly(p)
+# 			print(p2)
 
 
 
@@ -611,17 +615,17 @@ server <- (function(input, output) {
 			names(df) <- c("Time", "FEV1", "FEV1_lower", "FEV1_upper")
 			
 			
-			p<-ggplot(df, aes(Time, FEV1))
-			p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
-			       geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
-			       geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
-			       annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-			       annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
-			       labs(x="Time (years)", y="FEV1 (L)") +
-			       theme_bw()
-			
-			p2 <- ggplotly(p)
-			print(p2)
+			# p<-ggplot(df, aes(Time, FEV1))
+			# p <- p + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			#        geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
+			#        geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
+			#        annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
+			#        annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
+			#        labs(x="Time (years)", y="FEV1 (L)") +
+			#        theme_bw()
+			# 
+			# p2 <- ggplotly(p)
+			# print(p2)
 		}
 
 	})
@@ -1458,55 +1462,67 @@ server <- (function(input, output) {
       p_severe<-100-p_mild-p_moderate
 
 
-			stage<-rep(0, 1200)
-			stage<-c(rep("Mild",p_mild[1]), rep("Mod",p_moderate[1]), rep("Sev",p_severe[1]),
-					rep("Mild",p_mild[2]), rep("Mod",p_moderate[2]), rep("Sev",p_severe[2]),
-					rep("Mild",p_mild[3]), rep("Mod",p_moderate[3]), rep("Sev",p_severe[3]),
-					rep("Mild",p_mild[4]), rep("Mod",p_moderate[4]), rep("Sev",p_severe[4]),
-					rep("Mild",p_mild[5]), rep("Mod",p_moderate[5]), rep("Sev",p_severe[5]),
-					rep("Mild",p_mild[6]), rep("Mod",p_moderate[6]), rep("Sev",p_severe[6]),
-					rep("Mild",p_mild[7]), rep("Mod",p_moderate[7]), rep("Sev",p_severe[7]),
-					rep("Mild",p_mild[8]), rep("Mod",p_moderate[8]), rep("Sev",p_severe[8]),
-					rep("Mild",p_mild[9]), rep("Mod",p_moderate[9]), rep("Sev",p_severe[9]),
-					rep("Mild",p_mild[10]), rep("Mod",p_moderate[10]), rep("Sev",p_severe[10]),
-					rep("Mild",p_mild[11]), rep("Mod",p_moderate[11]), rep("Sev",p_severe[11]),
-					rep("Mild",p_mild[12]), rep("Mod",p_moderate[12]), rep("Sev",p_severe[12])
-					)
+			# stage<-rep(0, 1200)
+			# stage<-c(rep("Mild",p_mild[1]), rep("Mod",p_moderate[1]), rep("Sev",p_severe[1]),
+			# 		rep("Mild",p_mild[2]), rep("Mod",p_moderate[2]), rep("Sev",p_severe[2]),
+			# 		rep("Mild",p_mild[3]), rep("Mod",p_moderate[3]), rep("Sev",p_severe[3]),
+			# 		rep("Mild",p_mild[4]), rep("Mod",p_moderate[4]), rep("Sev",p_severe[4]),
+			# 		rep("Mild",p_mild[5]), rep("Mod",p_moderate[5]), rep("Sev",p_severe[5]),
+			# 		rep("Mild",p_mild[6]), rep("Mod",p_moderate[6]), rep("Sev",p_severe[6]),
+			# 		rep("Mild",p_mild[7]), rep("Mod",p_moderate[7]), rep("Sev",p_severe[7]),
+			# 		rep("Mild",p_mild[8]), rep("Mod",p_moderate[8]), rep("Sev",p_severe[8]),
+			# 		rep("Mild",p_mild[9]), rep("Mod",p_moderate[9]), rep("Sev",p_severe[9]),
+			# 		rep("Mild",p_mild[10]), rep("Mod",p_moderate[10]), rep("Sev",p_severe[10]),
+			# 		rep("Mild",p_mild[11]), rep("Mod",p_moderate[11]), rep("Sev",p_severe[11]),
+			# 		rep("Mild",p_mild[12]), rep("Mod",p_moderate[12]), rep("Sev",p_severe[12])
+			# 		)
+			# 
+			# print(stage)
+			# stage2<-rep(0, 1200)
+			# stage2<-c(rep(0,p_mild[1]), rep(1,p_moderate[1]), rep(2,p_severe[1]),
+			# 		rep(0,p_mild[2]), rep(1,p_moderate[2]), rep(2,p_severe[2]),
+			# 		rep(0,p_mild[3]), rep(1,p_moderate[3]), rep(2,p_severe[3]),
+			# 		rep(0,p_mild[4]), rep(1,p_moderate[4]), rep(2,p_severe[4]),
+			# 		rep(0,p_mild[5]), rep(1,p_moderate[5]), rep(2,p_severe[5]),
+			# 		rep(0,p_mild[6]), rep(1,p_moderate[6]), rep(2,p_severe[6]),
+			# 		rep(0,p_mild[7]), rep(1,p_moderate[7]), rep(2,p_severe[7]),
+			# 		rep(0,p_mild[8]), rep(1,p_moderate[8]), rep(2,p_severe[8]),
+			# 		rep(0,p_mild[9]), rep(1,p_moderate[9]), rep(2,p_severe[9]),
+			# 		rep(0,p_mild[10]), rep(1,p_moderate[10]), rep(2,p_severe[10]),
+			# 		rep(0,p_mild[11]), rep(1,p_moderate[11]), rep(2,p_severe[11]),
+			# 		rep(0,p_mild[12]), rep(1,p_moderate[12]), rep(2,p_severe[12])
+			# 		)
+			# 
+			# 
+			# year<-c(rep(0,100),
+			# 		rep(1,100),
+			# 		rep(2,100),
+			# 		rep(3,100),
+			# 		rep(4,100),
+			# 		rep(5,100),
+			# 		rep(6,100),
+			# 		rep(7,100),
+			# 		rep(8,100),
+			# 		rep(9,100),
+			# 		rep(10,100),
+			# 		rep(11,100)
+			# 		)
+      
+      
+      u1<-matrix(0,nrow=12,ncol=4)
+      u1[,1]<-c(0:11)
+      u1[,2]<-p_mild
+      u1[,3]<-p_moderate
+      u1[,4]<-p_severe
+      colnames(u1)<-c("year","mild", "moderate", "severe")
+      rownames(u1)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+      print(u1)
+      data <- as.data.frame(u1)
 
-			stage2<-rep(0, 1200)
-			stage2<-c(rep(0,p_mild[1]), rep(1,p_moderate[1]), rep(2,p_severe[1]),
-					rep(0,p_mild[2]), rep(1,p_moderate[2]), rep(2,p_severe[2]),
-					rep(0,p_mild[3]), rep(1,p_moderate[3]), rep(2,p_severe[3]),
-					rep(0,p_mild[4]), rep(1,p_moderate[4]), rep(2,p_severe[4]),
-					rep(0,p_mild[5]), rep(1,p_moderate[5]), rep(2,p_severe[5]),
-					rep(0,p_mild[6]), rep(1,p_moderate[6]), rep(2,p_severe[6]),
-					rep(0,p_mild[7]), rep(1,p_moderate[7]), rep(2,p_severe[7]),
-					rep(0,p_mild[8]), rep(1,p_moderate[8]), rep(2,p_severe[8]),
-					rep(0,p_mild[9]), rep(1,p_moderate[9]), rep(2,p_severe[9]),
-					rep(0,p_mild[10]), rep(1,p_moderate[10]), rep(2,p_severe[10]),
-					rep(0,p_mild[11]), rep(1,p_moderate[11]), rep(2,p_severe[11]),
-					rep(0,p_mild[12]), rep(1,p_moderate[12]), rep(2,p_severe[12])
-					)
-
-
-			year<-c(rep(0,100),
-					rep(1,100),
-					rep(2,100),
-					rep(3,100),
-					rep(4,100),
-					rep(5,100),
-					rep(6,100),
-					rep(7,100),
-					rep(8,100),
-					rep(9,100),
-					rep(10,100),
-					rep(11,100)
-					)
-
-
-			dat_sev<-table(stage,year)
-			data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
-			                   severe=as.numeric(dat_sev[3,]))
+			# dat_sev<-table(stage,year)
+			# print(dat_sev)
+			# data <- data.frame(year=as.numeric(colnames(dat_sev)), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
+			#                    severe=as.numeric(dat_sev[3,]))
 			
 			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
 			  add_trace(y = ~moderate, name='Moderate') %>%
@@ -1514,7 +1530,6 @@ server <- (function(input, output) {
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack', xaxis=list(title='Year', type='category',
 			                                                                          categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade')
-		
 
 
 # 			barplot(dat_sev, main="Probability of the selected patient being at each GOLD grade",
@@ -1617,56 +1632,66 @@ server <- (function(input, output) {
 			p_moderate<-round((pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96)-pnorm(0.5, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
 			p_severe<-100-p_mild-p_moderate
 
-			stage<-rep(0, 1200)
-			stage<-c(rep("Mild",p_mild[1]), rep("Mod",p_moderate[1]), rep("Sev",p_severe[1]),
-					rep("Mild",p_mild[2]), rep("Mod",p_moderate[2]), rep("Sev",p_severe[2]),
-					rep("Mild",p_mild[3]), rep("Mod",p_moderate[3]), rep("Sev",p_severe[3]),
-					rep("Mild",p_mild[4]), rep("Mod",p_moderate[4]), rep("Sev",p_severe[4]),
-					rep("Mild",p_mild[5]), rep("Mod",p_moderate[5]), rep("Sev",p_severe[5]),
-					rep("Mild",p_mild[6]), rep("Mod",p_moderate[6]), rep("Sev",p_severe[6]),
-					rep("Mild",p_mild[7]), rep("Mod",p_moderate[7]), rep("Sev",p_severe[7]),
-					rep("Mild",p_mild[8]), rep("Mod",p_moderate[8]), rep("Sev",p_severe[8]),
-					rep("Mild",p_mild[9]), rep("Mod",p_moderate[9]), rep("Sev",p_severe[9]),
-					rep("Mild",p_mild[10]), rep("Mod",p_moderate[10]), rep("Sev",p_severe[10]),
-					rep("Mild",p_mild[11]), rep("Mod",p_moderate[11]), rep("Sev",p_severe[11]),
-					rep("Mild",p_mild[12]), rep("Mod",p_moderate[12]), rep("Sev",p_severe[12])
-					)
+			# stage<-rep(0, 1200)
+			# stage<-c(rep("Mild",p_mild[1]), rep("Mod",p_moderate[1]), rep("Sev",p_severe[1]),
+			# 		rep("Mild",p_mild[2]), rep("Mod",p_moderate[2]), rep("Sev",p_severe[2]),
+			# 		rep("Mild",p_mild[3]), rep("Mod",p_moderate[3]), rep("Sev",p_severe[3]),
+			# 		rep("Mild",p_mild[4]), rep("Mod",p_moderate[4]), rep("Sev",p_severe[4]),
+			# 		rep("Mild",p_mild[5]), rep("Mod",p_moderate[5]), rep("Sev",p_severe[5]),
+			# 		rep("Mild",p_mild[6]), rep("Mod",p_moderate[6]), rep("Sev",p_severe[6]),
+			# 		rep("Mild",p_mild[7]), rep("Mod",p_moderate[7]), rep("Sev",p_severe[7]),
+			# 		rep("Mild",p_mild[8]), rep("Mod",p_moderate[8]), rep("Sev",p_severe[8]),
+			# 		rep("Mild",p_mild[9]), rep("Mod",p_moderate[9]), rep("Sev",p_severe[9]),
+			# 		rep("Mild",p_mild[10]), rep("Mod",p_moderate[10]), rep("Sev",p_severe[10]),
+			# 		rep("Mild",p_mild[11]), rep("Mod",p_moderate[11]), rep("Sev",p_severe[11]),
+			# 		rep("Mild",p_mild[12]), rep("Mod",p_moderate[12]), rep("Sev",p_severe[12])
+			# 		)
+			# 
+			# stage2<-rep(0, 1200)
+			# stage2<-c(rep(0,p_mild[1]), rep(1,p_moderate[1]), rep(2,p_severe[1]),
+			# 		rep(0,p_mild[2]), rep(1,p_moderate[2]), rep(2,p_severe[2]),
+			# 		rep(0,p_mild[3]), rep(1,p_moderate[3]), rep(2,p_severe[3]),
+			# 		rep(0,p_mild[4]), rep(1,p_moderate[4]), rep(2,p_severe[4]),
+			# 		rep(0,p_mild[5]), rep(1,p_moderate[5]), rep(2,p_severe[5]),
+			# 		rep(0,p_mild[6]), rep(1,p_moderate[6]), rep(2,p_severe[6]),
+			# 		rep(0,p_mild[7]), rep(1,p_moderate[7]), rep(2,p_severe[7]),
+			# 		rep(0,p_mild[8]), rep(1,p_moderate[8]), rep(2,p_severe[8]),
+			# 		rep(0,p_mild[9]), rep(1,p_moderate[9]), rep(2,p_severe[9]),
+			# 		rep(0,p_mild[10]), rep(1,p_moderate[10]), rep(2,p_severe[10]),
+			# 		rep(0,p_mild[11]), rep(1,p_moderate[11]), rep(2,p_severe[11]),
+			# 		rep(0,p_mild[12]), rep(1,p_moderate[12]), rep(2,p_severe[12])
+			# 		)
+			# 
+			# 
+			# 
+			# year<-c(rep(0,100),
+			# 		rep(1,100),
+			# 		rep(2,100),
+			# 		rep(3,100),
+			# 		rep(4,100),
+			# 		rep(5,100),
+			# 		rep(6,100),
+			# 		rep(7,100),
+			# 		rep(8,100),
+			# 		rep(9,100),
+			# 		rep(10,100),
+			# 		rep(11,100)
+			# 		)
+			
+			u1<-matrix(0,nrow=12,ncol=4)
+			u1[,1]<-c(0:11)
+			u1[,2]<-p_mild
+			u1[,3]<-p_moderate
+			u1[,4]<-p_severe
+			colnames(u1)<-c("year","mild", "moderate", "severe")
+			rownames(u1)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+			print(u1)
+			data <- as.data.frame(u1)
 
-			stage2<-rep(0, 1200)
-			stage2<-c(rep(0,p_mild[1]), rep(1,p_moderate[1]), rep(2,p_severe[1]),
-					rep(0,p_mild[2]), rep(1,p_moderate[2]), rep(2,p_severe[2]),
-					rep(0,p_mild[3]), rep(1,p_moderate[3]), rep(2,p_severe[3]),
-					rep(0,p_mild[4]), rep(1,p_moderate[4]), rep(2,p_severe[4]),
-					rep(0,p_mild[5]), rep(1,p_moderate[5]), rep(2,p_severe[5]),
-					rep(0,p_mild[6]), rep(1,p_moderate[6]), rep(2,p_severe[6]),
-					rep(0,p_mild[7]), rep(1,p_moderate[7]), rep(2,p_severe[7]),
-					rep(0,p_mild[8]), rep(1,p_moderate[8]), rep(2,p_severe[8]),
-					rep(0,p_mild[9]), rep(1,p_moderate[9]), rep(2,p_severe[9]),
-					rep(0,p_mild[10]), rep(1,p_moderate[10]), rep(2,p_severe[10]),
-					rep(0,p_mild[11]), rep(1,p_moderate[11]), rep(2,p_severe[11]),
-					rep(0,p_mild[12]), rep(1,p_moderate[12]), rep(2,p_severe[12])
-					)
 
-
-
-			year<-c(rep(0,100),
-					rep(1,100),
-					rep(2,100),
-					rep(3,100),
-					rep(4,100),
-					rep(5,100),
-					rep(6,100),
-					rep(7,100),
-					rep(8,100),
-					rep(9,100),
-					rep(10,100),
-					rep(11,100)
-					)
-
-
-			dat_sev<-table(stage,year)
-			data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
-			                   severe=as.numeric(dat_sev[3,]))
+			# dat_sev<-table(stage,year)
+			# data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
+			#                    severe=as.numeric(dat_sev[3,]))
 			
 			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
 			  add_trace(y = ~moderate, name='Moderate') %>%
@@ -1780,55 +1805,65 @@ server <- (function(input, output) {
 			p_severe<-100-p_mild-p_moderate
 
 
-			stage<-rep(0, 1200)
-			stage<-c(rep("Mild",p_mild[1]), rep("Mod",p_moderate[1]), rep("Sev",p_severe[1]),
-					rep("Mild",p_mild[2]), rep("Mod",p_moderate[2]), rep("Sev",p_severe[2]),
-					rep("Mild",p_mild[3]), rep("Mod",p_moderate[3]), rep("Sev",p_severe[3]),
-					rep("Mild",p_mild[4]), rep("Mod",p_moderate[4]), rep("Sev",p_severe[4]),
-					rep("Mild",p_mild[5]), rep("Mod",p_moderate[5]), rep("Sev",p_severe[5]),
-					rep("Mild",p_mild[6]), rep("Mod",p_moderate[6]), rep("Sev",p_severe[6]),
-					rep("Mild",p_mild[7]), rep("Mod",p_moderate[7]), rep("Sev",p_severe[7]),
-					rep("Mild",p_mild[8]), rep("Mod",p_moderate[8]), rep("Sev",p_severe[8]),
-					rep("Mild",p_mild[9]), rep("Mod",p_moderate[9]), rep("Sev",p_severe[9]),
-					rep("Mild",p_mild[10]), rep("Mod",p_moderate[10]), rep("Sev",p_severe[10]),
-					rep("Mild",p_mild[11]), rep("Mod",p_moderate[11]), rep("Sev",p_severe[11]),
-					rep("Mild",p_mild[12]), rep("Mod",p_moderate[12]), rep("Sev",p_severe[12])
-					)
-
-			stage2<-rep(0, 1200)
-			stage2<-c(rep(0,p_mild[1]), rep(1,p_moderate[1]), rep(2,p_severe[1]),
-					rep(0,p_mild[2]), rep(1,p_moderate[2]), rep(2,p_severe[2]),
-					rep(0,p_mild[3]), rep(1,p_moderate[3]), rep(2,p_severe[3]),
-					rep(0,p_mild[4]), rep(1,p_moderate[4]), rep(2,p_severe[4]),
-					rep(0,p_mild[5]), rep(1,p_moderate[5]), rep(2,p_severe[5]),
-					rep(0,p_mild[6]), rep(1,p_moderate[6]), rep(2,p_severe[6]),
-					rep(0,p_mild[7]), rep(1,p_moderate[7]), rep(2,p_severe[7]),
-					rep(0,p_mild[8]), rep(1,p_moderate[8]), rep(2,p_severe[8]),
-					rep(0,p_mild[9]), rep(1,p_moderate[9]), rep(2,p_severe[9]),
-					rep(0,p_mild[10]), rep(1,p_moderate[10]), rep(2,p_severe[10]),
-					rep(0,p_mild[11]), rep(1,p_moderate[11]), rep(2,p_severe[11]),
-					rep(0,p_mild[12]), rep(1,p_moderate[12]), rep(2,p_severe[12])
-					)
-
-
-			year<-c(rep(0,100),
-					rep(1,100),
-					rep(2,100),
-					rep(3,100),
-					rep(4,100),
-					rep(5,100),
-					rep(6,100),
-					rep(7,100),
-					rep(8,100),
-					rep(9,100),
-					rep(10,100),
-					rep(11,100)
-					)
-
-
-			dat_sev<-table(stage,year)
-			data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
-			                   severe=as.numeric(dat_sev[3,]))
+			# stage<-rep(0, 1200)
+			# stage<-c(rep("Mild",p_mild[1]), rep("Mod",p_moderate[1]), rep("Sev",p_severe[1]),
+			# 		rep("Mild",p_mild[2]), rep("Mod",p_moderate[2]), rep("Sev",p_severe[2]),
+			# 		rep("Mild",p_mild[3]), rep("Mod",p_moderate[3]), rep("Sev",p_severe[3]),
+			# 		rep("Mild",p_mild[4]), rep("Mod",p_moderate[4]), rep("Sev",p_severe[4]),
+			# 		rep("Mild",p_mild[5]), rep("Mod",p_moderate[5]), rep("Sev",p_severe[5]),
+			# 		rep("Mild",p_mild[6]), rep("Mod",p_moderate[6]), rep("Sev",p_severe[6]),
+			# 		rep("Mild",p_mild[7]), rep("Mod",p_moderate[7]), rep("Sev",p_severe[7]),
+			# 		rep("Mild",p_mild[8]), rep("Mod",p_moderate[8]), rep("Sev",p_severe[8]),
+			# 		rep("Mild",p_mild[9]), rep("Mod",p_moderate[9]), rep("Sev",p_severe[9]),
+			# 		rep("Mild",p_mild[10]), rep("Mod",p_moderate[10]), rep("Sev",p_severe[10]),
+			# 		rep("Mild",p_mild[11]), rep("Mod",p_moderate[11]), rep("Sev",p_severe[11]),
+			# 		rep("Mild",p_mild[12]), rep("Mod",p_moderate[12]), rep("Sev",p_severe[12])
+			# 		)
+			# 
+			# stage2<-rep(0, 1200)
+			# stage2<-c(rep(0,p_mild[1]), rep(1,p_moderate[1]), rep(2,p_severe[1]),
+			# 		rep(0,p_mild[2]), rep(1,p_moderate[2]), rep(2,p_severe[2]),
+			# 		rep(0,p_mild[3]), rep(1,p_moderate[3]), rep(2,p_severe[3]),
+			# 		rep(0,p_mild[4]), rep(1,p_moderate[4]), rep(2,p_severe[4]),
+			# 		rep(0,p_mild[5]), rep(1,p_moderate[5]), rep(2,p_severe[5]),
+			# 		rep(0,p_mild[6]), rep(1,p_moderate[6]), rep(2,p_severe[6]),
+			# 		rep(0,p_mild[7]), rep(1,p_moderate[7]), rep(2,p_severe[7]),
+			# 		rep(0,p_mild[8]), rep(1,p_moderate[8]), rep(2,p_severe[8]),
+			# 		rep(0,p_mild[9]), rep(1,p_moderate[9]), rep(2,p_severe[9]),
+			# 		rep(0,p_mild[10]), rep(1,p_moderate[10]), rep(2,p_severe[10]),
+			# 		rep(0,p_mild[11]), rep(1,p_moderate[11]), rep(2,p_severe[11]),
+			# 		rep(0,p_mild[12]), rep(1,p_moderate[12]), rep(2,p_severe[12])
+			# 		)
+			# 
+			# 
+			# year<-c(rep(0,100),
+			# 		rep(1,100),
+			# 		rep(2,100),
+			# 		rep(3,100),
+			# 		rep(4,100),
+			# 		rep(5,100),
+			# 		rep(6,100),
+			# 		rep(7,100),
+			# 		rep(8,100),
+			# 		rep(9,100),
+			# 		rep(10,100),
+			# 		rep(11,100)
+			# 		)
+			# 
+			# 
+			# dat_sev<-table(stage,year)
+			# data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
+			#                    severe=as.numeric(dat_sev[3,]))
+			
+			u1<-matrix(0,nrow=12,ncol=4)
+			u1[,1]<-c(0:11)
+			u1[,2]<-p_mild
+			u1[,3]<-p_moderate
+			u1[,4]<-p_severe
+			colnames(u1)<-c("year","mild", "moderate", "severe")
+			rownames(u1)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+			print(u1)
+			data <- as.data.frame(u1)
 			
 			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
 			  add_trace(y = ~moderate, name='Moderate') %>%
@@ -1935,56 +1970,66 @@ server <- (function(input, output) {
 			p_moderate<-round((pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96)-pnorm(0.5, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
 			p_severe<-100-p_mild-p_moderate
 
-			stage<-rep(0, 1300)
-			stage<-c(rep("Mild",p_mild[1]), rep("Mod",p_moderate[1]), rep("Sev",p_severe[1]),
-					rep("Mild",p_mild[2]), rep("Mod",p_moderate[2]), rep("Sev",p_severe[2]),
-					rep("Mild",p_mild[3]), rep("Mod",p_moderate[3]), rep("Sev",p_severe[3]),
-					rep("Mild",p_mild[4]), rep("Mod",p_moderate[4]), rep("Sev",p_severe[4]),
-					rep("Mild",p_mild[5]), rep("Mod",p_moderate[5]), rep("Sev",p_severe[5]),
-					rep("Mild",p_mild[6]), rep("Mod",p_moderate[6]), rep("Sev",p_severe[6]),
-					rep("Mild",p_mild[7]), rep("Mod",p_moderate[7]), rep("Sev",p_severe[7]),
-					rep("Mild",p_mild[8]), rep("Mod",p_moderate[8]), rep("Sev",p_severe[8]),
-					rep("Mild",p_mild[9]), rep("Mod",p_moderate[9]), rep("Sev",p_severe[9]),
-					rep("Mild",p_mild[10]), rep("Mod",p_moderate[10]), rep("Sev",p_severe[10]),
-					rep("Mild",p_mild[11]), rep("Mod",p_moderate[11]), rep("Sev",p_severe[11]),
-					rep("Mild",p_mild[12]), rep("Mod",p_moderate[12]), rep("Sev",p_severe[12]),
-					rep("Mild",p_mild[13]), rep("Mod",p_moderate[13]), rep("Sev",p_severe[13])
-					)
+			# stage<-rep(0, 1300)
+			# stage<-c(rep("Mild",p_mild[1]), rep("Mod",p_moderate[1]), rep("Sev",p_severe[1]),
+			# 		rep("Mild",p_mild[2]), rep("Mod",p_moderate[2]), rep("Sev",p_severe[2]),
+			# 		rep("Mild",p_mild[3]), rep("Mod",p_moderate[3]), rep("Sev",p_severe[3]),
+			# 		rep("Mild",p_mild[4]), rep("Mod",p_moderate[4]), rep("Sev",p_severe[4]),
+			# 		rep("Mild",p_mild[5]), rep("Mod",p_moderate[5]), rep("Sev",p_severe[5]),
+			# 		rep("Mild",p_mild[6]), rep("Mod",p_moderate[6]), rep("Sev",p_severe[6]),
+			# 		rep("Mild",p_mild[7]), rep("Mod",p_moderate[7]), rep("Sev",p_severe[7]),
+			# 		rep("Mild",p_mild[8]), rep("Mod",p_moderate[8]), rep("Sev",p_severe[8]),
+			# 		rep("Mild",p_mild[9]), rep("Mod",p_moderate[9]), rep("Sev",p_severe[9]),
+			# 		rep("Mild",p_mild[10]), rep("Mod",p_moderate[10]), rep("Sev",p_severe[10]),
+			# 		rep("Mild",p_mild[11]), rep("Mod",p_moderate[11]), rep("Sev",p_severe[11]),
+			# 		rep("Mild",p_mild[12]), rep("Mod",p_moderate[12]), rep("Sev",p_severe[12]),
+			# 		rep("Mild",p_mild[13]), rep("Mod",p_moderate[13]), rep("Sev",p_severe[13])
+			# 		)
+			# 
+			# stage2<-rep(0, 1300)
+			# stage2<-c(rep(0,p_mild[1]), rep(1,p_moderate[1]), rep(2,p_severe[1]),
+			# 		rep(0,p_mild[2]), rep(1,p_moderate[2]), rep(2,p_severe[2]),
+			# 		rep(0,p_mild[3]), rep(1,p_moderate[3]), rep(2,p_severe[3]),
+			# 		rep(0,p_mild[4]), rep(1,p_moderate[4]), rep(2,p_severe[4]),
+			# 		rep(0,p_mild[5]), rep(1,p_moderate[5]), rep(2,p_severe[5]),
+			# 		rep(0,p_mild[6]), rep(1,p_moderate[6]), rep(2,p_severe[6]),
+			# 		rep(0,p_mild[7]), rep(1,p_moderate[7]), rep(2,p_severe[7]),
+			# 		rep(0,p_mild[8]), rep(1,p_moderate[8]), rep(2,p_severe[8]),
+			# 		rep(0,p_mild[9]), rep(1,p_moderate[9]), rep(2,p_severe[9]),
+			# 		rep(0,p_mild[10]), rep(1,p_moderate[10]), rep(2,p_severe[10]),
+			# 		rep(0,p_mild[11]), rep(1,p_moderate[11]), rep(2,p_severe[11]),
+			# 		rep(0,p_mild[12]), rep(1,p_moderate[12]), rep(2,p_severe[12]),
+			# 		rep(0,p_mild[13]), rep(1,p_moderate[13]), rep(2,p_severe[13])
+			# 		)
+			# 
+			# year<-c(rep(-1,100),
+			# 		rep(0,100),
+			# 		rep(1,100),
+			# 		rep(2,100),
+			# 		rep(3,100),
+			# 		rep(4,100),
+			# 		rep(5,100),
+			# 		rep(6,100),
+			# 		rep(7,100),
+			# 		rep(8,100),
+			# 		rep(9,100),
+			# 		rep(10,100),
+			# 		rep(11,100)
+			# 		)
 
-			stage2<-rep(0, 1300)
-			stage2<-c(rep(0,p_mild[1]), rep(1,p_moderate[1]), rep(2,p_severe[1]),
-					rep(0,p_mild[2]), rep(1,p_moderate[2]), rep(2,p_severe[2]),
-					rep(0,p_mild[3]), rep(1,p_moderate[3]), rep(2,p_severe[3]),
-					rep(0,p_mild[4]), rep(1,p_moderate[4]), rep(2,p_severe[4]),
-					rep(0,p_mild[5]), rep(1,p_moderate[5]), rep(2,p_severe[5]),
-					rep(0,p_mild[6]), rep(1,p_moderate[6]), rep(2,p_severe[6]),
-					rep(0,p_mild[7]), rep(1,p_moderate[7]), rep(2,p_severe[7]),
-					rep(0,p_mild[8]), rep(1,p_moderate[8]), rep(2,p_severe[8]),
-					rep(0,p_mild[9]), rep(1,p_moderate[9]), rep(2,p_severe[9]),
-					rep(0,p_mild[10]), rep(1,p_moderate[10]), rep(2,p_severe[10]),
-					rep(0,p_mild[11]), rep(1,p_moderate[11]), rep(2,p_severe[11]),
-					rep(0,p_mild[12]), rep(1,p_moderate[12]), rep(2,p_severe[12]),
-					rep(0,p_mild[13]), rep(1,p_moderate[13]), rep(2,p_severe[13])
-					)
-
-			year<-c(rep(-1,100),
-					rep(0,100),
-					rep(1,100),
-					rep(2,100),
-					rep(3,100),
-					rep(4,100),
-					rep(5,100),
-					rep(6,100),
-					rep(7,100),
-					rep(8,100),
-					rep(9,100),
-					rep(10,100),
-					rep(11,100)
-					)
-
-			dat_sev<-table(stage,year)
-			data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
-			                   severe=as.numeric(dat_sev[3,]))
+			# dat_sev<-table(stage,year)
+			# data <- data.frame(year=colnames(dat_sev), mild=as.numeric(dat_sev[1,]), moderate=as.numeric(dat_sev[2,]),
+			#                    severe=as.numeric(dat_sev[3,]))
+			
+			u1<-matrix(0,nrow=13,ncol=4)
+			u1[,1]<-c(-1:11)
+			u1[,2]<-p_mild
+			u1[,3]<-p_moderate
+			u1[,4]<-p_severe
+			colnames(u1)<-c("year","mild", "moderate", "severe")
+			rownames(u1)<-c('Previous','Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+			print(u1)
+			data <- as.data.frame(u1)
 			print(data)
 			
 			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild') %>%
