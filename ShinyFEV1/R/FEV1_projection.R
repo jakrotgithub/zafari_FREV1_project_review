@@ -1,5 +1,5 @@
 
-fev1_projection <- function(fev1_0, int_effect, graph=T){
+fev1_projection <- function(fev1_0, int_effect){
 
 
   x<-c(0:11)
@@ -17,8 +17,8 @@ fev1_projection <- function(fev1_0, int_effect, graph=T){
   vari <- c()
   obs <- fev1_0
 
-  for (i in 1:11)
-  {
+  for (i in 1:11){
+
     t1 <- i
     beta_t_x <- 0;
     beta_x_p <- 0;
@@ -49,19 +49,19 @@ fev1_projection <- function(fev1_0, int_effect, graph=T){
   vari<-c(0,vari)
 
   fev1_up<-fev1_avg+1.96*sqrt(vari)
-
   fev1_low<-fev1_avg-1.96*sqrt(vari)
 
-  print(graph)
-
-    df<-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
-    names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
-    print(names(df))
+  df<-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
+  names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
 
   cv1<-sqrt(vari[2:12])/(fev1_avg[2:12]-fev1_0)
   aa1<-rbind(fev1_avg[2:12], fev1_up[2:12], fev1_low[2:12], round(abs(cv1)*100,0))
 
-  df_aa1 <- list("df"=df, "aa1"=aa1)
+  n_mean1<-(fev1_avg[12]-fev1_0)/11*1000
+  n_sd1<-((fev1_avg[12]-fev1_0)/11-(fev1_low[12]-fev1_0)/11)/1.96*1000
+  bb1<-data.frame(round(pnorm(-40, n_mean1, n_sd1)*100,0))
+
+  df_aa1 <- list("df"=df, "aa1"=aa1, "bb1"=bb1)
   print(df_aa1)
   return(df_aa1)
 
@@ -72,11 +72,9 @@ fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
 
   x<-c(0:11)
 
-  if (sex=="male")
-  {
+  if (sex=="male"){
     gender<-1
-  } else if (sex=="female")
-  {
+  } else if (sex=="female"){
     gender<-0
   }
 
@@ -102,8 +100,8 @@ fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
   obs<-fev1_0
 
 
-  for (i in 1:11)
-  {
+  for (i in 1:11) {
+
     t1 <- i
 
     beta_x <- -0.00519*age + 0.4625*gender + -0.00011*weight + -1.7603*height + 1.8931*height*height +
@@ -146,7 +144,6 @@ fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
   vari<-c(0,vari)
 
   fev1_up<-fev1_avg+1.96*sqrt(vari)
-
   fev1_low<-fev1_avg-1.96*sqrt(vari)
 
   df<-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
@@ -155,8 +152,12 @@ fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
   cv2<-sqrt(vari[2:12])/(fev1_avg[2:12]-fev1_0)
   aa2<-rbind(fev1_avg[2:12], fev1_up[2:12], fev1_low[2:12], round(abs(cv2)*100,0))
 
+  n_mean2<-(fev1_avg[12]-fev1_0)/11*1000
+  n_sd2<-((fev1_avg[12]-fev1_0)/11-(fev1_low[12]-fev1_0)/11)/1.96*1000
 
-  df_aa2 <- list("df"=df, "aa2"=aa2)
+  bb2<-data.frame(round(pnorm(-40, n_mean2, n_sd2)*100,0))
+
+  df_aa2 <- list("df"=df, "aa2"=aa2, "bb2"=bb2)
   print(df_aa2)
   return(df_aa2)
 
@@ -193,8 +194,8 @@ fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
 
   obs<-fev1_0
 
-  for (i in 1:11)
-  {
+  for (i in 1:11) {
+
     t1 <- i
 
     beta_x <- -0.00482*age + 0.4828*gender + -0.00041*weight + -1.8759*height + 1.9527*height*height +
@@ -238,16 +239,19 @@ fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
   vari<-c(0,vari)
 
   fev1_up<-fev1_avg+1.96*sqrt(vari)
-
   fev1_low<-fev1_avg-1.96*sqrt(vari)
 
-  df<-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
+  df <-data.frame(x, y=fev1_avg, vari, fev1_low, fev1_up)
   names(df) <- c("Time", "FEV1", "vari", "FEV1_lower", "FEV1_upper")
 
-  cv3<-sqrt(vari[2:12])/(fev1_avg[2:12]-fev1_0)
-  aa3<-rbind(fev1_avg[2:12], fev1_up[2:12], fev1_low[2:12], round(abs(cv3)*100,0))
+  cv3 <-sqrt(vari[2:12])/(fev1_avg[2:12]-fev1_0)
+  aa3 <-rbind(fev1_avg[2:12], fev1_up[2:12], fev1_low[2:12], round(abs(cv3)*100,0))
 
-  df_aa3 <- list("df"=df, "aa3"=aa3)
+  n_mean3 <-(fev1_avg[12]-fev1_0)/11*1000
+  n_sd3 <-((fev1_avg[12]-fev1_0)/11-(fev1_low[12]-fev1_0)/11)/1.96*1000
+  bb3 <-data.frame(round(pnorm(-40, n_mean3, n_sd3)*100,0))
+
+  df_aa3 <- list("df"=df, "aa3"=aa3, "bb3"=bb3)
   print(df_aa3)
   return(df_aa3)
 
@@ -257,20 +261,16 @@ fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, w
 
   x<-c(-1:11)
 
-  if (sex=="male")
-  {
+  if (sex=="male"){
     gender<-1
-  } else if (sex=="female")
-  {
+  } else if (sex=="female"){
     gender<-0
   }
 
-  if (smoking=="Smoker")
-  {
+  if (smoking=="Smoker"){
     smo<-1
     int<-0
-  } else if (smoking=="Sustained quitter")
-  {
+  } else if (smoking=="Sustained quitter"){
     smo<-0
     int<-0
   }
@@ -339,7 +339,6 @@ fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, w
   vari<-c(0,0,vari)
 
   fev1_up<-fev1_avg+1.96*sqrt(vari)
-
   fev1_low<-fev1_avg-1.96*sqrt(vari)
 
   df<-data.frame(x, y=fev1_avg, fev1_low, fev1_up)
@@ -348,7 +347,11 @@ fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, w
   cv4<-sqrt(vari[3:13])/(fev1_avg[3:13]-fev1_prev)
   aa4<-rbind(fev1_avg[3:13], fev1_up[3:13], fev1_low[3:13], round(abs(cv4)*100,0))
 
-  df_aa4 <- list("df"=df, "aa4"=aa4)
+  n_mean4<-(fev1_avg[13]-fev1_prev)/12*1000
+  n_sd4<-((fev1_avg[13]-fev1_prev)/12-(fev1_low[13]-fev1_prev)/12)/1.96*1000
+  bb4<-data.frame(round(pnorm(-40, n_mean4, n_sd4)*100,0))
+
+  df_aa4 <- list("df"=df, "aa4"=aa4, "bb4"=bb4)
   print(df_aa4)
   return(df_aa4)
 }
