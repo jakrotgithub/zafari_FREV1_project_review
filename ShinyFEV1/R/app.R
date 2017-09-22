@@ -132,6 +132,8 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- (function(input, output, session) {
 
+  buttonremove <- list("sendDataToCloud", "lasso2d", "pan2d" , "zoom2d", "hoverClosestCartesian")
+
 	output$inputParam<-renderUI({
 
 		if (input$model=='Basic model with only baseline FEV1') {
@@ -239,7 +241,7 @@ server <- (function(input, output, session) {
 			  annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
 			  annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
 			  labs(x="Time (years)", y="FEV1 (L)") +
-			  theme_bw())
+			  theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
 			print(p)
 
@@ -255,7 +257,7 @@ server <- (function(input, output, session) {
 			                 annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
 			                 annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
 			                 labs(x="Time (years)", y="FEV1 (L)") +
-			                 theme_bw())
+			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
 
 		} else if (!is.null(input$age) &
@@ -264,15 +266,14 @@ server <- (function(input, output, session) {
 		  df <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                         input$height)$df
 
-
-			p <- ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
 			                 geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
 			                 geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
 			                 annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
 			                 annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
 			                 labs(x="Time (years)", y="FEV1 (L)") +
-			                 theme_bw()
-			p2 <- ggplotly(p)
+			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
+
 
 
 		} else if (!is.null(input$fev1_prev) &
@@ -287,7 +288,8 @@ server <- (function(input, output, session) {
 			                 annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
 			                 annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
 			                 labs(x="Time (years)", y="FEV1 (L)") +
-			                 theme_bw())
+			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
+
 		}
 
 	})
@@ -434,7 +436,7 @@ server <- (function(input, output, session) {
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack',
 			         xaxis=list(title='Year', type='category', categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade',
-			         hovermode='x')
+			         hovermode='x') %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
     print(p)
 
@@ -478,9 +480,8 @@ server <- (function(input, output, session) {
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack',
 			         xaxis=list(title='Year', type='category', categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade',
-			         hovermode='x')
+			         hovermode='x') %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
-			print(p)
 
 		} else if (!is.null(input$age) &
 		           input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)"){
@@ -523,7 +524,7 @@ server <- (function(input, output, session) {
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack',
 			         xaxis=list(title='Year',type='category', categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade',
-			         hovermode='x')
+			         hovermode='x') %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
 			print(p)
 
@@ -570,7 +571,7 @@ server <- (function(input, output, session) {
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack',
 			         xaxis=list(title='Year', type='category', categoryorder='trace'),
 			         title='Probability of the selected patient being at each GOLD grade',
-			         hovermode='x')
+			         hovermode='x') %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
 			print(p)
 		}
