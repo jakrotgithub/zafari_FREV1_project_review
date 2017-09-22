@@ -133,23 +133,28 @@ ui <- fluidPage(
 server <- (function(input, output, session) {
 
   buttonremove <- list("sendDataToCloud", "lasso2d", "pan2d" , "zoom2d", "hoverClosestCartesian")
+  interventionTitle <- paste0('If the patient is going to use a new intervention,\n',
+                              'please indicate the effect of the new intervention\n',
+                              'relative to his/her current therapy on initial\n',
+                              'improvement in lung function (L).\n',
+                              'If you only want to model the natural course of\n',
+                              'disease progression irrespective of specific intervention,\n',
+                              'please select 0 in here.')
+  modelOptions <- c("Basic model with only baseline FEV1",
+                    "Complete model with baseline FEV1 and patient's characteristics",
+                    "Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)",
+                    "Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics")
 
 	output$inputParam<-renderUI({
 
-		if (input$model=='Basic model with only baseline FEV1') {
+		if (input$model==modelOptions[1]) {
 
 		  list(numericInput('fev1_0', 'FEV1 at baseline (L)', 2.75, min=1.25, max=3.55),
 
-		       tags$div(title=paste0('If the patient is going to use a new intervention,\n',
-		                             'please indicate the effect of the new intervention\n',
-		                             'relative to his/her current therapy on initial\n',
-                                  'improvement in lung function (L).\n',
-		                              'If you only want to model the natural course of\n',
-                                  'disease progression irrespective of specific intervention,\n',
-                                  'please select 0 in here.'),
+		       tags$div(title=interventionTitle,
 		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)))
 
-		} else if (input$model=="Complete model with baseline FEV1 and patient's characteristics"){
+		} else if (input$model==modelOptions[2]){
 
 		  list(numericInput('age', 'Please select age', 55, min=40, max=90),
 		       selectInput('sex', 'Sex', c('male', 'female')),
@@ -164,16 +169,10 @@ server <- (function(input, output, session) {
 
 		       numericInput('oco', "O'Connor", -12.70, min=-300.00, max=2.00),
 
-		       tags$div(title=paste0('If the patient is going to use a new intervention,\n',
-		                             'please indicate the effect of the new intervention\n',
-		                             'relative to his/her current therapy on initial\n',
-		                             'improvement in lung function (L).\n',
-		                             'If you only want to model the natural course of\n',
-		                             'disease progression irrespective of specific intervention,\n',
-		                             'please select 0 in here.'),
+		       tags$div(title=interventionTitle,
 		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)))
 
-		} else if (input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)") {
+		} else if (input$model==modelOptions[3]) {
 
 		  list(numericInput('age', 'Please select age', 55, min=40, max=90),
 
@@ -187,17 +186,11 @@ server <- (function(input, output, session) {
 
 		       numericInput('fev1_0', 'FEV1 at baseline (L)', 2.75, min=1.25, max=3.55),
 
-		       tags$div(title=paste0('If the patient is going to use a new intervention,\n',
-		                             'please indicate the effect of the new intervention\n',
-		                             'relative to his/her current therapy on initial\n',
-		                             'improvement in lung function (L).\n',
-		                             'If you only want to model the natural course of\n',
-		                             'disease progression irrespective of specific intervention,\n',
-		                             'please select 0 in here.'),
+		       tags$div(title=interventionTitle,
 		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)))
 
 
-		} else if (input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics") {
+		} else if (input$model==modelOptions[4]) {
 
 		  list(numericInput('age', 'Please select age', 55, min=40, max=90),
 
@@ -215,13 +208,7 @@ server <- (function(input, output, session) {
 
 		       numericInput('fev1_prev', 'FEV1 at previous year (L)', 2.8, min=1.25, max=3.55),
 
-		       tags$div(title=paste0('If the patient is going to use a new intervention,\n',
-		                             'please indicate the effect of the new intervention\n',
-		                             'relative to his/her current therapy on initial\n',
-		                             'improvement in lung function (L).\n',
-		                             'If you only want to model the natural course of\n',
-		                             'disease progression irrespective of specific intervention,\n',
-		                             'please select 0 in here.'),
+		       tags$div(title=interventionTitle,
 		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)))
 
 		}
@@ -231,7 +218,7 @@ server <- (function(input, output, session) {
 
 	output$figure<-renderPlotly({
 
-		if (!is.null(input$fev1_0) & input$model=="Basic model with only baseline FEV1") {
+		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
 
 		  df <- fev1_projection(input$fev1_0, input$int_effect)$df
 
@@ -246,7 +233,7 @@ server <- (function(input, output, session) {
 			print(p)
 
 
-		} else if (!is.null(input$age) & input$model=="Complete model with baseline FEV1 and patient's characteristics") {
+		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
 
 		  df <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
                              input$height, input$oco)$df
@@ -260,8 +247,7 @@ server <- (function(input, output, session) {
 			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
 
-		} else if (!is.null(input$age) &
-		           input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)"){
+		} else if (!is.null(input$age) & input$model==modelOptions[3]){
 
 		  df <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                         input$height)$df
@@ -275,9 +261,7 @@ server <- (function(input, output, session) {
 			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
 
-
-		} else if (!is.null(input$fev1_prev) &
-		           input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics") {
+		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]) {
 
 		  df <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                         input$height, input$oco)$df
@@ -296,7 +280,7 @@ server <- (function(input, output, session) {
 
 	output$cv<-renderTable({
 
-		if (!is.null(input$fev1_0) & input$model=="Basic model with only baseline FEV1") {
+		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
 
       aa1 <- fev1_projection(input$fev1_0, input$int_effect)$aa1
 			rownames(aa1)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
@@ -306,7 +290,7 @@ server <- (function(input, output, session) {
 
 			return(aa1)
 
-		} else if (!is.null(input$age) & input$model=="Complete model with baseline FEV1 and patient's characteristics"){
+		} else if (!is.null(input$age) & input$model==modelOptions[2]){
 
 		  aa2 <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                          input$height, input$oco)$aa2
@@ -318,8 +302,7 @@ server <- (function(input, output, session) {
 			return(aa2)
 
 
-		} else if (!is.null(input$age) &
-              input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)"){
+		} else if (!is.null(input$age) & input$model==modelOptions[3]){
 
       aa3 <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
                               input$height)$aa3
@@ -332,8 +315,7 @@ server <- (function(input, output, session) {
 			return(aa3)
 
 
-		} else if (!is.null(input$fev1_prev) &
-		           input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics"){
+		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]){
 
 		  aa4 <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
 		                          input$age, input$weight, input$height, input$oco)$aa4
@@ -353,7 +335,7 @@ server <- (function(input, output, session) {
 
 	output$prob_decliner<-renderText({
 
-		if (!is.null(input$fev1_0) & input$model=="Basic model with only baseline FEV1") {
+		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
 
       bb1 <- fev1_projection(input$fev1_0, input$int_effect)$bb1
 			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years
@@ -361,7 +343,7 @@ server <- (function(input, output, session) {
       bb1 <- paste0(prob_text, as.numeric(bb1), "%")
 			return(bb1)
 
-		} else if (!is.null(input$age) & input$model=="Complete model with baseline FEV1 and patient's characteristics") {
+		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
 
 		  bb2 <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                         input$height, input$oco)$bb2
@@ -373,9 +355,7 @@ server <- (function(input, output, session) {
 			return(bb2)
 
 
-		} else if (!is.null(input$age) &
-		           input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)"){
-
+		} else if (!is.null(input$age) & input$model==modelOptions[3]){
 
 		  bb3 <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                          input$height)$bb3
@@ -386,8 +366,7 @@ server <- (function(input, output, session) {
 
 			return(bb3)
 
-		} else if (!is.null(input$fev1_prev) &
-		           input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics"){
+		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]){
 
 		  bb4 <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
 		                          input$age, input$weight, input$height, input$oco)$bb4
@@ -401,7 +380,7 @@ server <- (function(input, output, session) {
 
 	output$severity<-renderPlotly({
 
-		if (!is.null(input$fev1_0) & input$model=="Basic model with only baseline FEV1") {
+		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
 
 			gender<-1
 			age_x<-55
@@ -441,7 +420,7 @@ server <- (function(input, output, session) {
     print(p)
 
 
-		} else if (!is.null(input$age) & input$model=="Complete model with baseline FEV1 and patient's characteristics") {
+		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
 
 		  df <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                          input$height, input$oco)$df
@@ -483,8 +462,7 @@ server <- (function(input, output, session) {
 			         hovermode='x') %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
 
-		} else if (!is.null(input$age) &
-		           input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)"){
+		} else if (!is.null(input$age) & input$model==modelOptions[3]){
 
 		  df <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                          input$height)$df
@@ -529,9 +507,7 @@ server <- (function(input, output, session) {
 			print(p)
 
 
-		} else if (!is.null(input$fev1_prev) &
-		           input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics") {
-
+		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]) {
 
 		  df <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
 		                          input$age, input$weight, input$height, input$oco)$df
@@ -580,7 +556,7 @@ server <- (function(input, output, session) {
 
 	output$sevTab<-renderTable({
 
-		if (!is.null(input$fev1_0) & input$model=="Basic model with only baseline FEV1") {
+		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
 
 			gender<-1
 			age_x<-55
@@ -608,8 +584,7 @@ server <- (function(input, output, session) {
 			print(u1)
 			return(u1)
 
-		} else if (!is.null(input$age) & input$model=="Complete model with baseline FEV1 and patient's characteristics") {
-
+		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
 
 		  df <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                         input$height, input$oco)$df
@@ -640,8 +615,7 @@ server <- (function(input, output, session) {
 			colnames(u2)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
 			return(u2)
 
-		} else if (!is.null(input$age) &
-		           input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)") {
+		} else if (!is.null(input$age) & input$model==modelOptions[3]) {
 
 
 		  df <- fev1_projection3(fev1_0=input$fev1_0, int_effect=input$int_effect, sex=input$sex, smoking=input$smoking,
@@ -675,8 +649,7 @@ server <- (function(input, output, session) {
 			colnames(u3)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
 			return(u3)
 
-		} else if (!is.null(input$fev1_prev) &
-		           input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics") {
+		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]) {
 
 			df <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
 			                       input$age, input$weight, input$height, input$oco)$df
