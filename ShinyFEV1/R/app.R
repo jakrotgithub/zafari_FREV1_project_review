@@ -4,6 +4,10 @@ library(plotly)
 library(shinyBS)
 #devtools::install_github("shiny", "rstudio")
 
+options(shiny.error = function() {
+  stop("")
+}) # removes red error message from Shiny webpage
+
 # Define UI for dataset viewer application
 ui <- fluidPage(
   tags$head(tags$style("#prob_decliner{color: black;
