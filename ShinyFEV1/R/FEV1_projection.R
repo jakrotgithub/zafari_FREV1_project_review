@@ -165,6 +165,7 @@ fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
 
 fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, height){
 
+  print("kinda workings")
   x<-c(0:11)
 
   if (sex=="male"){
@@ -260,6 +261,8 @@ fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
 fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, weight, height, oco){
 
   x<-c(-1:11)
+  print(x)
+  print("Test")
 
   if (sex=="male"){
     gender<-1

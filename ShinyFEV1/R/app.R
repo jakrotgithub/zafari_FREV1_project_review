@@ -229,7 +229,7 @@ server <- (function(input, output, session) {
 		  df <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
                              input$height, input$oco)$df
 
-			p <- ggplotly (ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
 			                 geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
 			                 geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
 			                 annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
@@ -237,30 +237,31 @@ server <- (function(input, output, session) {
 			                 labs(x="Time (years)", y="FEV1 (L)") +
 			                 theme_bw())
 
-			print(p)
 
-		} else if (!is.null(input$age) & input$model=="Complete model with baseline FEV1 and patient's characteristics
-		           (without hyperresponsiveness)") {
+		} else if (!is.null(input$age) &
+		           input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)"){
 
 		  df <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                         input$height)$df
 
-			p <- ggplotly (ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
+
+			p <- ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
 			                 geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
 			                 geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
 			                 annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
 			                 annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
 			                 labs(x="Time (years)", y="FEV1 (L)") +
-			                 theme_bw())
+			                 theme_bw()
+			p2 <- ggplotly(p)
 
 
-		} else if (!is.null(input$fev1_prev) & input$model=="Model with baseline FEV1, 1-year history of FEV1,
-		           and patient's characteristics") {
+		} else if (!is.null(input$fev1_prev) &
+		           input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics") {
 
 		  df <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                         input$height, input$oco)$df
 
-			p <- ggplotly (ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
+			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
 			                 geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
 			                 geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
 			                 annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
@@ -295,11 +296,12 @@ server <- (function(input, output, session) {
 			return(aa2)
 
 
-		} else if (!is.null(input$age) & input$model=="Complete model with baseline FEV1 and patient's characteristics
-		           (without hyperresponsiveness)"){
+		} else if (!is.null(input$age) &
+              input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)"){
 
       aa3 <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
                               input$height)$aa3
+
 			rownames(aa3)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
 			                 "Coefficient of Variation (CV) (%)")
 			colnames(aa3)<-c('Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8',
@@ -308,11 +310,12 @@ server <- (function(input, output, session) {
 			return(aa3)
 
 
-		} else if (!is.null(input$fev1_prev) & input$model=="Model with baseline FEV1, 1-year history of FEV1,
-		           and patient's characteristics"){
+		} else if (!is.null(input$fev1_prev) &
+		           input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics"){
 
 		  aa4 <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
 		                          input$age, input$weight, input$height, input$oco)$aa4
+
 		  rownames(aa4)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
 		                   "Coefficient of Variation (CV) (%)")
 		  colnames(aa4)<-c('Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8',
@@ -348,8 +351,9 @@ server <- (function(input, output, session) {
 			return(bb2)
 
 
-		} else if (!is.null(input$age) & input$model=="Complete model with baseline FEV1 and patient's characteristics
-		           (without hyperresponsiveness)"){
+		} else if (!is.null(input$age) &
+		           input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)"){
+
 
 		  bb3 <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                          input$height)$bb3
@@ -360,8 +364,8 @@ server <- (function(input, output, session) {
 
 			return(bb3)
 
-		} else if (!is.null(input$fev1_prev) & input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's
-		           characteristics"){
+		} else if (!is.null(input$fev1_prev) &
+		           input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics"){
 
 		  bb4 <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
 		                          input$age, input$weight, input$height, input$oco)$bb4
@@ -380,11 +384,12 @@ server <- (function(input, output, session) {
 			gender<-1
 			age_x<-55
 			height_x<-1.7
+			x<-c(0:11)
 
 			df <- fev1_projection(input$fev1_0, input$int_effect)$df
 			fev1_avg <- df$FEV1
-			fev1_lower <- df$FEV1_lower
-			fev1_upper <- df$FEV1_upper
+			fev1_low <- df$FEV1_lower
+			fev1_up <- df$FEV1_upper
 
 			fev_pred<-(0.5536 + -0.01303*(age_x+x) + -0.000172*(age_x+x)^2 + 0.00014098*(height_x*100)^2)*gender +
 						(0.4333 + -0.00361*(age_x+x) + -0.000194*(age_x+x)^2 + 0.00011496*(height_x*100)^2)*(1-gender)
@@ -408,7 +413,8 @@ server <- (function(input, output, session) {
 			  add_trace(y = ~severe, name='Severe', marker = list(color = toRGB("#D55E00"))) %>%
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack',
 			         xaxis=list(title='Year', type='category', categoryorder='trace'),
-			         title='Probability of the selected patient being at each GOLD grade')
+			         title='Probability of the selected patient being at each GOLD grade',
+			         hovermode='x')
 
     print(p)
 
@@ -419,8 +425,9 @@ server <- (function(input, output, session) {
 		                          input$height, input$oco)$df
 
 		  fev1_avg <- df$FEV1
-		  fev1_lower <- df$FEV1_lower
-		  fev1_upper <- df$FEV1_upper
+		  fev1_low <- df$FEV1_lower
+		  fev1_up <- df$FEV1_upper
+		  x<-c(0:11)
 
 		  if (input$sex=="male"){
 		    gender<-1
@@ -450,19 +457,21 @@ server <- (function(input, output, session) {
 			  add_trace(y = ~severe, name='Severe', marker = list(color = toRGB("#D55E00"))) %>%
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack',
 			         xaxis=list(title='Year', type='category', categoryorder='trace'),
-			         title='Probability of the selected patient being at each GOLD grade')
+			         title='Probability of the selected patient being at each GOLD grade',
+			         hovermode='x')
 
 			print(p)
 
-		} else if (!is.null(input$age) & input$model=="Complete model with baseline FEV1 and patient's characteristics
-		           (without hyperresponsiveness)"){
+		} else if (!is.null(input$age) &
+		           input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)"){
 
 		  df <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
 		                          input$height)$df
 
 		  fev1_avg <- df$FEV1
-		  fev1_lower <- df$FEV1_lower
-		  fev1_upper <- df$FEV1_upper
+		  fev1_low <- df$FEV1_lower
+		  fev1_up <- df$FEV1_upper
+		  x<-c(0:11)
 
 		  if (input$sex=="male"){
 		    gender<-1
@@ -493,21 +502,23 @@ server <- (function(input, output, session) {
 			  add_trace(y = ~severe, name='Severe', marker = list(color = toRGB("#D55E00"))) %>%
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack',
 			         xaxis=list(title='Year',type='category', categoryorder='trace'),
-			         title='Probability of the selected patient being at each GOLD grade')
+			         title='Probability of the selected patient being at each GOLD grade',
+			         hovermode='x')
 
 			print(p)
 
 
-		} else if (!is.null(input$fev1_prev) & input$model=="Model with baseline FEV1, 1-year history of FEV1,
-		           and patient's characteristics") {
+		} else if (!is.null(input$fev1_prev) &
+		           input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics") {
 
 
 		  df <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
 		                          input$age, input$weight, input$height, input$oco)$df
 
 		  fev1_avg <- df$FEV1
-		  fev1_lower <- df$FEV1_lower
-		  fev1_upper <- df$FEV1_upper
+		  fev1_low <- df$FEV1_lower
+		  fev1_up <- df$FEV1_upper
+		  x<-c(-1:11)
 
 			if (input$sex=="male"){
 				gender<-1
@@ -538,7 +549,8 @@ server <- (function(input, output, session) {
 			  add_trace(y = ~severe, name='Severe', marker = list(color = toRGB("#D55E00"))) %>%
 			  layout(yaxis=list(title='Probability (%)'), barmode='stack',
 			         xaxis=list(title='Year', type='category', categoryorder='trace'),
-			         title='Probability of the selected patient being at each GOLD grade')
+			         title='Probability of the selected patient being at each GOLD grade',
+			         hovermode='x')
 
 			print(p)
 		}
@@ -552,11 +564,12 @@ server <- (function(input, output, session) {
 			gender<-1
 			age_x<-55
 			height_x<-1.7
+			x<-c(0:11)
 
 			df <- fev1_projection(input$fev1_0, input$int_effect)$df
 			fev1_avg <- df$FEV1
-			fev1_lower <- df$FEV1_lower
-			fev1_upper <- df$FEV1_upper
+			fev1_low <- df$FEV1_lower
+			fev1_up <- df$FEV1_upper
 
 			fev_pred<-(0.5536 + -0.01303*(age_x+x) + -0.000172*(age_x+x)^2 + 0.00014098*(height_x*100)^2)*gender +
 						(0.4333 + -0.00361*(age_x+x) + -0.000194*(age_x+x)^2 + 0.00011496*(height_x*100)^2)*(1-gender)
@@ -581,8 +594,9 @@ server <- (function(input, output, session) {
 		                         input$height, input$oco)$df
 
 		  fev1_avg <- df$FEV1
-		  fev1_lower <- df$FEV1_lower
-		  fev1_upper <- df$FEV1_upper
+		  fev1_low <- df$FEV1_lower
+		  fev1_up <- df$FEV1_upper
+		  x<-c(0:11)
 
 		  if (input$sex=="male"){
 		    gender<-1
@@ -605,15 +619,17 @@ server <- (function(input, output, session) {
 			colnames(u2)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
 			return(u2)
 
-		} else if (!is.null(input$age) & input$model=="Complete model with baseline FEV1 and patient's characteristics
-		           (without hyperresponsiveness)") {
+		} else if (!is.null(input$age) &
+		           input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)") {
 
-		  df <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                         input$height)$df
+
+		  df <- fev1_projection3(fev1_0=input$fev1_0, int_effect=input$int_effect, sex=input$sex, smoking=input$smoking,
+		                         age=input$age, weight=input$weight, height=input$height)$df
 
 		  fev1_avg <- df$FEV1
-		  fev1_lower <- df$FEV1_lower
-		  fev1_upper <- df$FEV1_upper
+		  fev1_low <- df$FEV1_lower
+		  fev1_up <- df$FEV1_upper
+		  x<-c(0:11)
 
 			if (input$sex=="male"){
 				gender<-1
@@ -638,15 +654,16 @@ server <- (function(input, output, session) {
 			colnames(u3)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
 			return(u3)
 
-		} else if (!is.null(input$fev1_prev) & input$model=="Model with baseline FEV1, 1-year history of FEV1,
-		           and patient's characteristics") {
+		} else if (!is.null(input$fev1_prev) &
+		           input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics") {
 
 			df <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
 			                       input$age, input$weight, input$height, input$oco)$df
 
 			fev1_avg <- df$FEV1
-			fev1_lower <- df$FEV1_lower
-			fev1_upper <- df$FEV1_upper
+			fev1_low <- df$FEV1_lower
+			fev1_up <- df$FEV1_upper
+			x<-c(-1:11)
 
 			if (input$sex=="male") {
 				gender<-1
