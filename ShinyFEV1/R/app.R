@@ -137,7 +137,15 @@ server <- (function(input, output, session) {
 		if (input$model=='Basic model with only baseline FEV1') {
 
 		  list(numericInput('fev1_0', 'FEV1 at baseline (L)', 2.75, min=1.25, max=3.55),
-		       numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1))
+
+		       tags$div(title=paste0('If the patient is going to use a new intervention,\n',
+		                             'please indicate the effect of the new intervention\n',
+		                             'relative to his/her current therapy on initial\n',
+                                  'improvement in lung function (L).\n',
+		                              'If you only want to model the natural course of\n',
+                                  'disease progression irrespective of specific intervention,\n',
+                                  'please select 0 in here.'),
+		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)))
 
 		} else if (input$model=="Complete model with baseline FEV1 and patient's characteristics"){
 
@@ -154,10 +162,14 @@ server <- (function(input, output, session) {
 
 		       numericInput('oco', "O'Connor", -12.70, min=-300.00, max=2.00),
 
-		       numericInput('int_effect', 'If the patient is going to use a new intervention, please indicate the
- 				             effect of the new intervention relative to his/her current therapy on initial improvement
- 				             in lung function (L). If you only want to model the natural course of disease progression
- 				             irrespective of specific interevntion, please select 0 in here.', 0, min=0, max=0.1))
+		       tags$div(title=paste0('If the patient is going to use a new intervention,\n',
+		                             'please indicate the effect of the new intervention\n',
+		                             'relative to his/her current therapy on initial\n',
+		                             'improvement in lung function (L).\n',
+		                             'If you only want to model the natural course of\n',
+		                             'disease progression irrespective of specific intervention,\n',
+		                             'please select 0 in here.'),
+		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)))
 
 		} else if (input$model=="Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)") {
 
@@ -173,10 +185,14 @@ server <- (function(input, output, session) {
 
 		       numericInput('fev1_0', 'FEV1 at baseline (L)', 2.75, min=1.25, max=3.55),
 
-		       numericInput('int_effect', 'If the patient is going to use a new intervention, please indicate the
- 				             effect of the new intervention relative to his/her current therapy on initial improvement
- 				             in lung function (L). If you only want to model the natural course of disease progression
- 				             irrespective of specific interevntion, please select 0 in here.', 0, min=0, max=0.1))
+		       tags$div(title=paste0('If the patient is going to use a new intervention,\n',
+		                             'please indicate the effect of the new intervention\n',
+		                             'relative to his/her current therapy on initial\n',
+		                             'improvement in lung function (L).\n',
+		                             'If you only want to model the natural course of\n',
+		                             'disease progression irrespective of specific intervention,\n',
+		                             'please select 0 in here.'),
+		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)))
 
 
 		} else if (input$model=="Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics") {
@@ -197,16 +213,16 @@ server <- (function(input, output, session) {
 
 		       numericInput('fev1_prev', 'FEV1 at previous year (L)', 2.8, min=1.25, max=3.55),
 
-		       numericInput('int_effect', 'If the patient is going to use a new intervention, please indicate the
- 				             effect of the new intervention relative to his/her current therapy on initial improvement
- 				             in lung function (L). If you only want to model the natural course of disease progression
- 				             irrespective of specific interevntion, please select 0 in here.', 0, min=0, max=0.1))
+		       tags$div(title=paste0('If the patient is going to use a new intervention,\n',
+		                             'please indicate the effect of the new intervention\n',
+		                             'relative to his/her current therapy on initial\n',
+		                             'improvement in lung function (L).\n',
+		                             'If you only want to model the natural course of\n',
+		                             'disease progression irrespective of specific intervention,\n',
+		                             'please select 0 in here.'),
+		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)))
 
 		}
-	#   addPopover(session,id='int_effect', title='If the patient is going to use a new intervention,
-	# 	             please indicate the effect of the new intervention relative to his/her current therapy on
-	#              initial improvement in lung function (L). If you only want to model the natural course of disease
-	#              progression irrespective of specific intervention, please select 0 in here.', content="hi",trigger='click')
 
 	  })
 
