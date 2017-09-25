@@ -243,6 +243,14 @@ server <- (function(input, output, session) {
 			                labs(x=xlab, y=ylab) +
 			                theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
+			p$x$data[[1]]$text <- paste0("Time (years): ", df$Time, "<br />", "FEV1 (L): ", round(df$FEV1,3),
+			                             "<br />FEv1 lower (L): ", round(df$FEV1_lower,3), "<br />FEV1 upper (L): ",
+			                             round(df$FEV1_upper),3)
+
+			p$x$data[[3]]$hoverinfo="none"
+			p$x$data[[4]]$hoverinfo="none"
+			p
+
 
 		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
 
@@ -259,6 +267,14 @@ server <- (function(input, output, session) {
 			                 labs(x=xlab, y=ylab) +
 			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
+			p$x$data[[1]]$text <- paste0("Time (years): ", df$Time, "<br />", "FEV1 (L): ", round(df$FEV1,3),
+			                             "<br />FEv1 lower (L): ", round(df$FEV1_lower,3), "<br />FEV1 upper (L): ",
+			                             round(df$FEV1_upper),3)
+
+			p$x$data[[3]]$hoverinfo="none"
+			p$x$data[[4]]$hoverinfo="none"
+			p
+
 
 		} else if (!is.null(input$age) & input$model==modelOptions[3]){
 
@@ -274,6 +290,13 @@ server <- (function(input, output, session) {
 			                 labs(x=xlab, y=ylab) +
 			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
+			p$x$data[[1]]$text <- paste0("Time (years): ", df$Time, "<br />", "FEV1 (L): ", round(df$FEV1,3),
+			                             "<br />FEv1 lower (L): ", round(df$FEV1_lower,3), "<br />FEV1 upper (L): ",
+			                             round(df$FEV1_upper),3)
+			p$x$data[[3]]$hoverinfo="none"
+			p$x$data[[4]]$hoverinfo="none"
+			p
+
 
 		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]) {
 
@@ -287,7 +310,15 @@ server <- (function(input, output, session) {
 			                 annotate("text", 1, 3.52, label="Mean FEV1 decline", colour="black", size=4, hjust=0) +
 			                 annotate("text", 1.15, 3.4, label=coverageInterval, colour=errorLineColor, size=4, hjust=0) +
 			                 labs(x=xlab, y=ylab) +
-			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
+			                 theme_bw(), tooltip=c('x','y')) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
+			p$x$data[[1]]$text <- paste0("Time (years): ", df$Time, "<br />", "FEV1 (L): ", round(df$FEV1,3),
+			                             "<br />FEv1 lower (L): ", round(df$FEV1_lower,3), "<br />FEV1 upper (L): ",
+			                             round(df$FEV1_upper),3)
+			p$x$data[[3]]$hoverinfo="none"
+			p$x$data[[4]]$hoverinfo="none"
+			p
+
+
 
 		}
 
