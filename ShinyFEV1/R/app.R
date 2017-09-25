@@ -132,6 +132,8 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- (function(input, output, session) {
 
+  # Output Function Constants-------------------------------------------------------------------------------------------------
+
   buttonremove <- list("sendDataToCloud", "lasso2d", "pan2d" , "zoom2d", "hoverClosestCartesian")
   interventionTitle <- paste0('If the patient is going to use a new intervention,\n',
                               'please indicate the effect of the new intervention\n',
@@ -144,6 +146,17 @@ server <- (function(input, output, session) {
                     "Complete model with baseline FEV1 and patient's characteristics",
                     "Complete model with baseline FEV1 and patient's characteristics (without hyperresponsiveness)",
                     "Model with baseline FEV1, 1-year history of FEV1, and patient's characteristics")
+  years <- c('Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8',
+            'Year 9', 'Year 10', 'Year 11')
+
+  ######## Ouput Figure (FEV1 Projection Plot) -----------------------------------
+
+  coverageInterval <- "95% coverage interval"
+  xlab="Time (years)"
+  ylab="FEV1 (L)"
+  errorLineColor <- "darkcyan"
+
+  # Output Functions-----------------------------------------------------------------------------------------------------------
 
 	output$inputParam<-renderUI({
 
@@ -215,7 +228,6 @@ server <- (function(input, output, session) {
 
 	  })
 
-
 	output$figure<-renderPlotly({
 
 		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
@@ -223,14 +235,13 @@ server <- (function(input, output, session) {
 		  df <- fev1_projection(input$fev1_0, input$int_effect)$df
 
 			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
-			  geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
-			  geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
-			  annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-			  annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
-			  labs(x="Time (years)", y="FEV1 (L)") +
-			  theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
-
-			print(p)
+			                geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
+			                geom_line(aes(y = FEV1_lower), color=errorLineColor, linetype=2) +
+			                geom_line(aes(y = FEV1_upper), color=errorLineColor, linetype=2) +
+			                annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
+			                annotate("text", 1, 3.3, label=coverageInterval, colour="red", size=3, hjust=0) +
+			                labs(x=xlab, y=ylab) +
+			                theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
 
 		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
@@ -239,11 +250,12 @@ server <- (function(input, output, session) {
                              input$height, input$oco)$df
 
 			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
-			                 geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
-			                 geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
+			                 geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
+			                 geom_line(aes(y = FEV1_lower), color=errorLineColor, linetype=2) +
+			                 geom_line(aes(y = FEV1_upper), color=errorLineColor, linetype=2) +
 			                 annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-			                 annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
-			                 labs(x="Time (years)", y="FEV1 (L)") +
+			                 annotate("text", 1, 3.3, label=coverageInterval, colour="red", size=3, hjust=0) +
+			                 labs(x=xlab, y=ylab) +
 			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
 
@@ -253,11 +265,12 @@ server <- (function(input, output, session) {
 		                         input$height)$df
 
 			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
-			                 geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
-			                 geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
+			                 geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
+			                 geom_line(aes(y = FEV1_lower), color=errorLineColor, linetype=2) +
+			                 geom_line(aes(y = FEV1_upper), color=errorLineColor, linetype=2) +
 			                 annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-			                 annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
-			                 labs(x="Time (years)", y="FEV1 (L)") +
+			                 annotate("text", 1, 3.3, label=coverageInterval, colour="red", size=3, hjust=0) +
+			                 labs(x=xlab, y=ylab) +
 			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
 
@@ -267,11 +280,12 @@ server <- (function(input, output, session) {
 		                         input$height, input$oco)$df
 
 			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
-			                 geom_line(aes(y = FEV1_lower), color="red", linetype=2) +
-			                 geom_line(aes(y = FEV1_upper), color="red", linetype=2) +
+			                 geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
+			                 geom_line(aes(y = FEV1_lower), color=errorLineColor, linetype=2) +
+			                 geom_line(aes(y = FEV1_upper), color=errorLineColor, linetype=2) +
 			                 annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-			                 annotate("text", 1, 3.3, label="99.5% coverage interval", colour="red", size=3, hjust=0) +
-			                 labs(x="Time (years)", y="FEV1 (L)") +
+			                 annotate("text", 1, 3.3, label=coverageInterval, colour="red", size=3, hjust=0) +
+			                 labs(x=xlab, y=ylab) +
 			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
 		}
@@ -285,8 +299,7 @@ server <- (function(input, output, session) {
       aa1 <- fev1_projection(input$fev1_0, input$int_effect)$aa1
 			rownames(aa1)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
 			                 "Coefficient of Variation (CV) (%)")
-			colnames(aa1)<-c('Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8',
-			                 'Year 9', 'Year 10', 'Year 11')
+			colnames(aa1)<- years
 
 			return(aa1)
 
@@ -296,8 +309,7 @@ server <- (function(input, output, session) {
 		                          input$height, input$oco)$aa2
 		  rownames(aa2)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
 		                   "Coefficient of Variation (CV) (%)")
-		  colnames(aa2)<-c('Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8',
-		                   'Year 9', 'Year 10', 'Year 11')
+		  colnames(aa2)<- years
 
 			return(aa2)
 
@@ -309,8 +321,7 @@ server <- (function(input, output, session) {
 
 			rownames(aa3)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
 			                 "Coefficient of Variation (CV) (%)")
-			colnames(aa3)<-c('Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8',
-			                 'Year 9', 'Year 10', 'Year 11')
+			colnames(aa3)<- years
 
 			return(aa3)
 
@@ -322,8 +333,7 @@ server <- (function(input, output, session) {
 
 		  rownames(aa4)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
 		                   "Coefficient of Variation (CV) (%)")
-		  colnames(aa4)<-c('Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8',
-		                   'Year 9', 'Year 10', 'Year 11')
+		  colnames(aa4)<- years
 
 		  return(aa4)
 		}
@@ -405,7 +415,7 @@ server <- (function(input, output, session) {
       u1[,3]<-p_moderate
       u1[,4]<-p_severe
       colnames(u1)<-c("year","mild", "moderate", "severe")
-      rownames(u1)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+      rownames(u1)<- c('Baseline', years)
       print(u1)
       data <- as.data.frame(u1)
 
@@ -449,7 +459,7 @@ server <- (function(input, output, session) {
 			u1[,3]<-p_moderate
 			u1[,4]<-p_severe
 			colnames(u1)<-c("year","mild", "moderate", "severe")
-			rownames(u1)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+			rownames(u1)<-c('Baseline', years)
 			print(u1)
 			data <- as.data.frame(u1)
 
@@ -492,7 +502,7 @@ server <- (function(input, output, session) {
 			u1[,3]<-p_moderate
 			u1[,4]<-p_severe
 			colnames(u1)<-c("year","mild", "moderate", "severe")
-			rownames(u1)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+			rownames(u1)<-c('Baseline', years)
 			print(u1)
 			data <- as.data.frame(u1)
 
@@ -536,7 +546,7 @@ server <- (function(input, output, session) {
 			u1[,3]<-p_moderate
 			u1[,4]<-p_severe
 			colnames(u1)<-c("year","mild", "moderate", "severe")
-			rownames(u1)<-c('Previous','Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+			rownames(u1)<-c('Previous','Baseline', years)
 			print(u1)
 			data <- as.data.frame(u1)
 			print(data)
@@ -580,7 +590,7 @@ server <- (function(input, output, session) {
 			u1[2,]<-p_moderate
 			u1[3,]<-p_severe
 			rownames(u1)<-c("Probability of being mild", "Probability of being moderate", "Probability of being severe")
-			colnames(u1)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+			colnames(u1)<-c('Baseline', years)
 			print(u1)
 			return(u1)
 
@@ -612,8 +622,7 @@ server <- (function(input, output, session) {
 			u2[2,]<-p_moderate
 			u2[3,]<-p_severe
 			rownames(u2)<-c("Probability of being mild", "Probability of being moderate", "Probability of being severe")
-			colnames(u2)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
-			return(u2)
+			colnames(u2)<- c('Baseline', years)
 
 		} else if (!is.null(input$age) & input$model==modelOptions[3]) {
 
@@ -646,7 +655,7 @@ server <- (function(input, output, session) {
 			u3[2,]<-p_moderate
 			u3[3,]<-p_severe
 			rownames(u3)<-c("Probability of being mild", "Probability of being moderate", "Probability of being severe")
-			colnames(u3)<-c('Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+			colnames(u3)<-c('Baseline', years)
 			return(u3)
 
 		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]) {
@@ -677,7 +686,7 @@ server <- (function(input, output, session) {
 			u4[2,]<-p_moderate
 			u4[3,]<-p_severe
 			rownames(u4)<-c("Probability of being mild", "Probability of being moderate", "Probability of being severe")
-			colnames(u4)<-c('Previous year', 'Baseline', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11')
+			colnames(u4)<-c('Previous year', 'Baseline', years)
 			return(u4)
 		}
 	},
