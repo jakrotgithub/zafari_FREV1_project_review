@@ -238,8 +238,8 @@ server <- (function(input, output, session) {
 			                geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
 			                geom_line(aes(y = FEV1_lower), color=errorLineColor, linetype=2) +
 			                geom_line(aes(y = FEV1_upper), color=errorLineColor, linetype=2) +
-			                annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-			                annotate("text", 1, 3.3, label=coverageInterval, colour="red", size=3, hjust=0) +
+			                annotate("text", 1, 3.52, label="Mean FEV1 decline", colour="black", size=4, hjust=0) +
+			                annotate("text", 1.15, 3.4, label=coverageInterval, colour=errorLineColor, size=4, hjust=0) +
 			                labs(x=xlab, y=ylab) +
 			                theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
@@ -249,12 +249,13 @@ server <- (function(input, output, session) {
 		  df <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
                              input$height, input$oco)$df
 
+
 			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
 			                 geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
 			                 geom_line(aes(y = FEV1_lower), color=errorLineColor, linetype=2) +
 			                 geom_line(aes(y = FEV1_upper), color=errorLineColor, linetype=2) +
-			                 annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-			                 annotate("text", 1, 3.3, label=coverageInterval, colour="red", size=3, hjust=0) +
+			                 annotate("text", 1, 3.52, label="Mean FEV1 decline", colour="black", size=4, hjust=0) +
+			                 annotate("text", 1.15, 3.4, label=coverageInterval, colour=errorLineColor, size=4) +
 			                 labs(x=xlab, y=ylab) +
 			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
@@ -268,8 +269,8 @@ server <- (function(input, output, session) {
 			                 geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
 			                 geom_line(aes(y = FEV1_lower), color=errorLineColor, linetype=2) +
 			                 geom_line(aes(y = FEV1_upper), color=errorLineColor, linetype=2) +
-			                 annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-			                 annotate("text", 1, 3.3, label=coverageInterval, colour="red", size=3, hjust=0) +
+			                 annotate("text", 1, 3.52, label="Mean FEV1 decline", colour="black", size=4, hjust=0) +
+			                 annotate("text", 1.15, 3.4, label=coverageInterval, colour=errorLineColor, size=4, hjust=0) +
 			                 labs(x=xlab, y=ylab) +
 			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
@@ -283,8 +284,8 @@ server <- (function(input, output, session) {
 			                 geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
 			                 geom_line(aes(y = FEV1_lower), color=errorLineColor, linetype=2) +
 			                 geom_line(aes(y = FEV1_upper), color=errorLineColor, linetype=2) +
-			                 annotate("text", 1, 3.4, label="Mean FEV1 decline", colour="black", size=3, hjust=0) +
-			                 annotate("text", 1, 3.3, label=coverageInterval, colour="red", size=3, hjust=0) +
+			                 annotate("text", 1, 3.52, label="Mean FEV1 decline", colour="black", size=4, hjust=0) +
+			                 annotate("text", 1.15, 3.4, label=coverageInterval, colour=errorLineColor, size=4, hjust=0) +
 			                 labs(x=xlab, y=ylab) +
 			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
 
