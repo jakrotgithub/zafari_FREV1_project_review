@@ -1,5 +1,5 @@
 
-fev1_projection <- function(fev1_0, int_effect){
+fev1_projection <- function(fev1_0, int_effect, tio="No"){
 
 
   x<-c(0:11)
@@ -11,6 +11,9 @@ fev1_projection <- function(fev1_0, int_effect){
   cov1<--0.00048
   v_t<-0.000941
   v_e<-0.01724
+
+  tioBefore <- 0.015
+  tioAfter <- 0.022
 
 
   fev1_avg <- c()
@@ -42,10 +45,14 @@ fev1_projection <- function(fev1_0, int_effect){
 
     fev1_avg[i]<-unconditional_mu[1] + sigma_12%*%solve(sigma_22)%*%(obs-unconditional_mu[-1])
     vari[i]<-sigma_11 - sigma_12%*%solve(sigma_22)%*%sigma_21
+    if(tio=="Yes"){
+      fev1_avg[i] <- fev1_avg[i] + tioBefore*i
+    }
   }
 
 
   fev1_avg<-c(fev1_0, fev1_avg)
+
   vari<-c(0,vari)
 
   fev1_up<-fev1_avg+1.96*sqrt(vari)
@@ -68,7 +75,7 @@ fev1_projection <- function(fev1_0, int_effect){
 
 }
 
-fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, height, oco){
+fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, height, oco, tio="No"){
 
   x<-c(0:11)
 
@@ -137,6 +144,9 @@ fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
 
     fev1_avg[i]<-unconditional_mu[1] + sigma_12%*%solve(sigma_22)%*%(obs-unconditional_mu[-1])
     vari[i]<-sigma_11 - sigma_12%*%solve(sigma_22)%*%sigma_21
+    if(tio=="Yes"){
+      fev1_avg[i] <- fev1_avg[i] + tioBefore*i
+    }
   }
 
 
@@ -163,7 +173,7 @@ fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
 
 }
 
-fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, height){
+fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, height, tio="No"){
 
   print("kinda workings")
   x<-c(0:11)
@@ -233,6 +243,9 @@ fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
 
     fev1_avg[i]<-unconditional_mu[1] + sigma_12%*%solve(sigma_22)%*%(obs-unconditional_mu[-1])
     vari[i]<-sigma_11 - sigma_12%*%solve(sigma_22)%*%sigma_21
+    if(tio=="Yes"){
+      fev1_avg[i] <- fev1_avg[i] + tioBefore*i
+    }
   }
 
 
@@ -258,7 +271,7 @@ fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
 
 }
 
-fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, weight, height, oco){
+fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, weight, height, oco, tio="No"){
 
   x<-c(-1:11)
   print(x)
@@ -335,6 +348,9 @@ fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, w
 
     fev1_avg[i]<-unconditional_mu[1] + sigma_12%*%solve(sigma_22)%*%(obs-unconditional_mu[-1])
     vari[i]<-sigma_11 - sigma_12%*%solve(sigma_22)%*%sigma_21
+    if(tio=="Yes"){
+      fev1_avg[i] <- fev1_avg[i] + tioBefore*i
+    }
   }
 
 

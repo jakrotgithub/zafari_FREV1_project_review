@@ -165,7 +165,9 @@ server <- (function(input, output, session) {
 		  list(numericInput('fev1_0', 'FEV1 at baseline (L)', 2.75, min=1.25, max=3.55),
 
 		       tags$div(title=interventionTitle,
-		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)))
+		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)),
+
+		       selectInput('tio', 'Is the patient being treated with tiotropium?', c('No', 'Yes')))
 
 		} else if (input$model==modelOptions[2]){
 
@@ -183,7 +185,8 @@ server <- (function(input, output, session) {
 		       numericInput('oco', "O'Connor", -12.70, min=-300.00, max=2.00),
 
 		       tags$div(title=interventionTitle,
-		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)))
+		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)),
+		       selectInput('tio', 'Is the patient being treated with tiotropium?', c('No', 'Yes')))
 
 		} else if (input$model==modelOptions[3]) {
 
@@ -200,7 +203,8 @@ server <- (function(input, output, session) {
 		       numericInput('fev1_0', 'FEV1 at baseline (L)', 2.75, min=1.25, max=3.55),
 
 		       tags$div(title=interventionTitle,
-		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)))
+		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)),
+		       selectInput('tio', 'Is the patient being treated with tiotropium?', c('No', 'Yes')))
 
 
 		} else if (input$model==modelOptions[4]) {
@@ -222,7 +226,8 @@ server <- (function(input, output, session) {
 		       numericInput('fev1_prev', 'FEV1 at previous year (L)', 2.8, min=1.25, max=3.55),
 
 		       tags$div(title=interventionTitle,
-		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)))
+		                numericInput('int_effect', 'Effect of Intervention on Lung Function (L)', 0, min=0, max=0.1)),
+		       selectInput('tio', 'Is the patient being treated with tiotropium?', c('No', 'Yes')))
 
 		}
 
@@ -232,7 +237,7 @@ server <- (function(input, output, session) {
 
 		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
 
-		  df <- fev1_projection(input$fev1_0, input$int_effect)$df
+		  df <- fev1_projection(input$fev1_0, input$int_effect, input$tio)$df
 
 			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
 			                geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
@@ -251,11 +256,10 @@ server <- (function(input, output, session) {
 			p$x$data[[4]]$hoverinfo="none"
 			p
 
-
 		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
 
 		  df <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-                             input$height, input$oco)$df
+                             input$height, input$oco, input$tio)$df
 
 
 			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
@@ -279,7 +283,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$age) & input$model==modelOptions[3]){
 
 		  df <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                         input$height)$df
+		                         input$height, input$tio)$df
 
 			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
 			                 geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
@@ -301,7 +305,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]) {
 
 		  df <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                         input$height, input$oco)$df
+		                         input$height, input$oco, input$tio)$df
 
 			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
 			                 geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
