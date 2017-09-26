@@ -93,6 +93,9 @@ fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
     int<-0
   }
 
+  tioBefore <- 0.015
+  tioAfter <- 0.022
+
   beta_0<-1.4212
   beta_t<--0.1779
   beta_t2<--0.00044
@@ -192,6 +195,9 @@ fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
     int<-0
   }
 
+  tioBefore <- 0.015
+  tioAfter <- 0.022
+
   beta_0<-1.4258
   beta_t<--0.1795
   beta_t2<--0.00044
@@ -290,6 +296,9 @@ fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, w
     smo<-0
     int<-0
   }
+
+  tioBefore <- 0.015
+  tioAfter <- 0.022
 
   beta_0<-1.4212
   beta_t<--0.1779

@@ -332,7 +332,7 @@ server <- (function(input, output, session) {
 
 		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
 
-      aa1 <- fev1_projection(input$fev1_0, input$int_effect)$aa1
+      aa1 <- fev1_projection(input$fev1_0, input$int_effect, input$tio)$aa1
 			rownames(aa1)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
 			                 "Coefficient of Variation (CV) (%)")
 			colnames(aa1)<- years
@@ -342,7 +342,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$age) & input$model==modelOptions[2]){
 
 		  aa2 <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                          input$height, input$oco)$aa2
+		                          input$height, input$oco, input$tio)$aa2
 		  rownames(aa2)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
 		                   "Coefficient of Variation (CV) (%)")
 		  colnames(aa2)<- years
@@ -353,7 +353,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$age) & input$model==modelOptions[3]){
 
       aa3 <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-                              input$height)$aa3
+                              input$height, input$tio)$aa3
 
 			rownames(aa3)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
 			                 "Coefficient of Variation (CV) (%)")
@@ -365,7 +365,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]){
 
 		  aa4 <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
-		                          input$age, input$weight, input$height, input$oco)$aa4
+		                          input$age, input$weight, input$height, input$oco, input$tio)$aa4
 
 		  rownames(aa4)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
 		                   "Coefficient of Variation (CV) (%)")
@@ -383,7 +383,7 @@ server <- (function(input, output, session) {
 
 		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
 
-      bb1 <- fev1_projection(input$fev1_0, input$int_effect)$bb1
+      bb1 <- fev1_projection(input$fev1_0, input$int_effect, input$tio)$bb1
 			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years
 			  (declines more than 40 ml/year): '
       bb1 <- paste0(prob_text, as.numeric(bb1), "%")
@@ -392,7 +392,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
 
 		  bb2 <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                         input$height, input$oco)$bb2
+		                         input$height, input$oco, input$tio)$bb2
 
 		  prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years
 			              (declines more than 40 ml/year): '
@@ -404,7 +404,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$age) & input$model==modelOptions[3]){
 
 		  bb3 <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                          input$height)$bb3
+		                          input$height, input$tio)$bb3
 
 			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years
 			(declines more than 40 ml/year): '
@@ -415,7 +415,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]){
 
 		  bb4 <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
-		                          input$age, input$weight, input$height, input$oco)$bb4
+		                          input$age, input$weight, input$height, input$oco, input$tio)$bb4
 
 			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years
 			  (declines more than 40 ml/year): '
@@ -433,7 +433,7 @@ server <- (function(input, output, session) {
 			height_x<-1.7
 			x<-c(0:11)
 
-			df <- fev1_projection(input$fev1_0, input$int_effect)$df
+			df <- fev1_projection(input$fev1_0, input$int_effect, input$tio)$df
 			fev1_avg <- df$FEV1
 			fev1_low <- df$FEV1_lower
 			fev1_up <- df$FEV1_upper
@@ -469,7 +469,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
 
 		  df <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                          input$height, input$oco)$df
+		                          input$height, input$oco, input$tio)$df
 
 		  fev1_avg <- df$FEV1
 		  fev1_low <- df$FEV1_lower
@@ -511,7 +511,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$age) & input$model==modelOptions[3]){
 
 		  df <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                          input$height)$df
+		                          input$height, input$tio)$df
 
 		  fev1_avg <- df$FEV1
 		  fev1_low <- df$FEV1_lower
@@ -556,7 +556,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]) {
 
 		  df <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
-		                          input$age, input$weight, input$height, input$oco)$df
+		                          input$age, input$weight, input$height, input$oco, input$tio)$df
 
 		  fev1_avg <- df$FEV1
 		  fev1_low <- df$FEV1_lower
@@ -609,7 +609,7 @@ server <- (function(input, output, session) {
 			height_x<-1.7
 			x<-c(0:11)
 
-			df <- fev1_projection(input$fev1_0, input$int_effect)$df
+			df <- fev1_projection(input$fev1_0, input$int_effect, input$tio)$df
 			fev1_avg <- df$FEV1
 			fev1_low <- df$FEV1_lower
 			fev1_up <- df$FEV1_upper
@@ -633,7 +633,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
 
 		  df <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                         input$height, input$oco)$df
+		                         input$height, input$oco, input$tio)$df
 
 		  fev1_avg <- df$FEV1
 		  fev1_low <- df$FEV1_lower
@@ -664,7 +664,7 @@ server <- (function(input, output, session) {
 
 
 		  df <- fev1_projection3(fev1_0=input$fev1_0, int_effect=input$int_effect, sex=input$sex, smoking=input$smoking,
-		                         age=input$age, weight=input$weight, height=input$height)$df
+		                         age=input$age, weight=input$weight, height=input$height, input$tio)$df
 
 		  fev1_avg <- df$FEV1
 		  fev1_low <- df$FEV1_lower
@@ -697,7 +697,7 @@ server <- (function(input, output, session) {
 		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]) {
 
 			df <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
-			                       input$age, input$weight, input$height, input$oco)$df
+			                       input$age, input$weight, input$height, input$oco, input$tio)$df
 
 			fev1_avg <- df$FEV1
 			fev1_low <- df$FEV1_lower
