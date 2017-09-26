@@ -1,5 +1,5 @@
 
-fev1_projection <- function(fev1_0, int_effect){
+fev1_projection <- function(fev1_0, int_effect, tio="No"){
 
 
   x<-c(0:11)
@@ -11,6 +11,9 @@ fev1_projection <- function(fev1_0, int_effect){
   cov1<--0.00048
   v_t<-0.000941
   v_e<-0.01724
+
+  tioBefore <- 0.015
+  tioAfter <- 0.022
 
 
   fev1_avg <- c()
@@ -42,10 +45,14 @@ fev1_projection <- function(fev1_0, int_effect){
 
     fev1_avg[i]<-unconditional_mu[1] + sigma_12%*%solve(sigma_22)%*%(obs-unconditional_mu[-1])
     vari[i]<-sigma_11 - sigma_12%*%solve(sigma_22)%*%sigma_21
+    if(tio=="Yes"){
+      fev1_avg[i] <- fev1_avg[i] + tioBefore*i
+    }
   }
 
 
   fev1_avg<-c(fev1_0, fev1_avg)
+
   vari<-c(0,vari)
 
   fev1_up<-fev1_avg+1.96*sqrt(vari)
@@ -61,14 +68,14 @@ fev1_projection <- function(fev1_0, int_effect){
   n_sd1<-((fev1_avg[12]-fev1_0)/11-(fev1_low[12]-fev1_0)/11)/1.96*1000
   bb1<-data.frame(round(pnorm(-40, n_mean1, n_sd1)*100,0))
 
-  df_aa1 <- list("df"=df, "aa1"=aa1, "bb1"=bb1)
+  df_aa1 <- list("df"=df, "aa1"=aa1, "bb1"=bb1, "options"=1)
   print(df_aa1)
   return(df_aa1)
 
 
 }
 
-fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, height, oco){
+fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, height, oco, tio="No"){
 
   x<-c(0:11)
 
@@ -85,6 +92,9 @@ fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
     smo<-0
     int<-0
   }
+
+  tioBefore <- 0.015
+  tioAfter <- 0.022
 
   beta_0<-1.4212
   beta_t<--0.1779
@@ -137,6 +147,9 @@ fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
 
     fev1_avg[i]<-unconditional_mu[1] + sigma_12%*%solve(sigma_22)%*%(obs-unconditional_mu[-1])
     vari[i]<-sigma_11 - sigma_12%*%solve(sigma_22)%*%sigma_21
+    if(tio=="Yes"){
+      fev1_avg[i] <- fev1_avg[i] + tioBefore*i
+    }
   }
 
 
@@ -157,13 +170,13 @@ fev1_projection2 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
 
   bb2<-data.frame(round(pnorm(-40, n_mean2, n_sd2)*100,0))
 
-  df_aa2 <- list("df"=df, "aa2"=aa2, "bb2"=bb2)
+  df_aa2 <- list("df"=df, "aa1"=aa2, "bb1"=bb2, "options"=2)
   print(df_aa2)
   return(df_aa2)
 
 }
 
-fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, height){
+fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, height, tio="No"){
 
   print("kinda workings")
   x<-c(0:11)
@@ -181,6 +194,9 @@ fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
     smo<-0
     int<-0
   }
+
+  tioBefore <- 0.015
+  tioAfter <- 0.022
 
   beta_0<-1.4258
   beta_t<--0.1795
@@ -233,6 +249,9 @@ fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
 
     fev1_avg[i]<-unconditional_mu[1] + sigma_12%*%solve(sigma_22)%*%(obs-unconditional_mu[-1])
     vari[i]<-sigma_11 - sigma_12%*%solve(sigma_22)%*%sigma_21
+    if(tio=="Yes"){
+      fev1_avg[i] <- fev1_avg[i] + tioBefore*i
+    }
   }
 
 
@@ -252,13 +271,13 @@ fev1_projection3 <- function(fev1_0, int_effect, sex, smoking, age, weight, heig
   n_sd3 <-((fev1_avg[12]-fev1_0)/11-(fev1_low[12]-fev1_0)/11)/1.96*1000
   bb3 <-data.frame(round(pnorm(-40, n_mean3, n_sd3)*100,0))
 
-  df_aa3 <- list("df"=df, "aa3"=aa3, "bb3"=bb3)
+  df_aa3 <- list("df"=df, "aa1"=aa3, "bb1"=bb3, "options"=3)
   print(df_aa3)
   return(df_aa3)
 
 }
 
-fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, weight, height, oco){
+fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, weight, height, oco, tio="No"){
 
   x<-c(-1:11)
   print(x)
@@ -277,6 +296,9 @@ fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, w
     smo<-0
     int<-0
   }
+
+  tioBefore <- 0.015
+  tioAfter <- 0.022
 
   beta_0<-1.4212
   beta_t<--0.1779
@@ -335,6 +357,9 @@ fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, w
 
     fev1_avg[i]<-unconditional_mu[1] + sigma_12%*%solve(sigma_22)%*%(obs-unconditional_mu[-1])
     vari[i]<-sigma_11 - sigma_12%*%solve(sigma_22)%*%sigma_21
+    if(tio=="Yes"){
+      fev1_avg[i] <- fev1_avg[i] + tioBefore*i
+    }
   }
 
 
@@ -354,7 +379,7 @@ fev1_projection4 <- function(fev1_0, fev1_prev, int_effect, sex, smoking, age, w
   n_sd4<-((fev1_avg[13]-fev1_prev)/12-(fev1_low[13]-fev1_prev)/12)/1.96*1000
   bb4<-data.frame(round(pnorm(-40, n_mean4, n_sd4)*100,0))
 
-  df_aa4 <- list("df"=df, "aa4"=aa4, "bb4"=bb4)
+  df_aa4 <- list("df"=df, "aa1"=aa4, "bb1"=bb4, "options"=4)
   print(df_aa4)
   return(df_aa4)
 }
