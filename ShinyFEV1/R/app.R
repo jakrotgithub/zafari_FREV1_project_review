@@ -96,33 +96,6 @@ ui <- fluidPage(
                               John E. Connett, Bruce McManus, MD, Raymond Ng, Zsuszanna Hollander, Mohsen Sadatsafavi.
                               Please cite this paper when using the results of this web application."))
             )
-
-
-#     #paste("Figure 1. Prediction based on baseline FEV1"),
-#     plotOutput("figure"),
-#     br(),
-#     br(),
-#     br(),
-#     br(),
-#     tableOutput("prob_decliner"),
-#     br(),
-#     br(),
-#     br(),
-#     br(),
-#     h4("This table quantifies heterogeneity. Please note that Coefficient of Variation (CV) is a measure of heterogeneity calculated
-# 			 by the ratio of standard deviation to the mean FEV1 decline (i.e., it represents noise to signal ratio). In this table CV is shown
-# 			 at different years. For instance, CV for year 2 represents the amount of heterogeneity around mean FEV1 decline over 2 years."),
-#     br(),
-#     tableOutput("cv"),
-#     br(),
-#     br(),
-#     br(),
-#     br(),
-#     plotOutput("severity"),
-#     br(),
-#     br(),
-#     tableOutput("sevTab")
-#
   )
 
 ))
@@ -233,11 +206,36 @@ server <- (function(input, output, session) {
 
 	  })
 
+  data <- reactive({
+
+    if(!is.null(input$fev1_0) & input$model==modelOptions[1]) {
+
+        fev1_projection(input$fev1_0, input$int_effect, input$tio)
+
+
+    } else if(!is.null(input$age) & input$model==modelOptions[2]){
+
+        fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
+                             input$height, input$oco, input$tio)
+
+
+    } else if(!is.null(input$age) & input$model==modelOptions[3]) {
+        fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
+                             input$height, input$tio)
+
+    } else if(!is.null(input$fev1_prev) & input$model==modelOptions[4]){
+
+        fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
+                               input$height, input$oco, input$tio)
+
+    }
+
+  })
+
 	output$figure<-renderPlotly({
 
-		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
-
-		  df <- fev1_projection(input$fev1_0, input$int_effect, input$tio)$df
+      df <- data()$df
+      print(class(df))
 
 			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
 			                geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
@@ -247,6 +245,7 @@ server <- (function(input, output, session) {
 			                annotate("text", 1.15, 3.4, label=coverageInterval, colour=errorLineColor, size=4, hjust=0) +
 			                labs(x=xlab, y=ylab) +
 			                theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
+			print(p)
 
 			p$x$data[[1]]$text <- paste0("Time (years): ", df$Time, "<br />", "FEV1 (L): ", round(df$FEV1,3),
 			                             "<br />FEv1 lower (L): ", round(df$FEV1_lower,3), "<br />FEV1 upper (L): ",
@@ -256,202 +255,81 @@ server <- (function(input, output, session) {
 			p$x$data[[4]]$hoverinfo="none"
 			p
 
-		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
-
-		  df <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-                             input$height, input$oco, input$tio)$df
-
-
-			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
-			                 geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
-			                 geom_line(aes(y = FEV1_lower), color=errorLineColor, linetype=2) +
-			                 geom_line(aes(y = FEV1_upper), color=errorLineColor, linetype=2) +
-			                 annotate("text", 1, 3.52, label="Mean FEV1 decline", colour="black", size=4, hjust=0) +
-			                 annotate("text", 1.15, 3.4, label=coverageInterval, colour=errorLineColor, size=4) +
-			                 labs(x=xlab, y=ylab) +
-			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
-
-			p$x$data[[1]]$text <- paste0("Time (years): ", df$Time, "<br />", "FEV1 (L): ", round(df$FEV1,3),
-			                             "<br />FEv1 lower (L): ", round(df$FEV1_lower,3), "<br />FEV1 upper (L): ",
-			                             round(df$FEV1_upper),3)
-
-			p$x$data[[3]]$hoverinfo="none"
-			p$x$data[[4]]$hoverinfo="none"
-			p
-
-
-		} else if (!is.null(input$age) & input$model==modelOptions[3]){
-
-		  df <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                         input$height, input$tio)$df
-
-			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
-			                 geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
-			                 geom_line(aes(y = FEV1_lower), color=errorLineColor, linetype=2) +
-			                 geom_line(aes(y = FEV1_upper), color=errorLineColor, linetype=2) +
-			                 annotate("text", 1, 3.52, label="Mean FEV1 decline", colour="black", size=4, hjust=0) +
-			                 annotate("text", 1.15, 3.4, label=coverageInterval, colour=errorLineColor, size=4, hjust=0) +
-			                 labs(x=xlab, y=ylab) +
-			                 theme_bw()) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
-
-			p$x$data[[1]]$text <- paste0("Time (years): ", df$Time, "<br />", "FEV1 (L): ", round(df$FEV1,3),
-			                             "<br />FEv1 lower (L): ", round(df$FEV1_lower,3), "<br />FEV1 upper (L): ",
-			                             round(df$FEV1_upper),3)
-			p$x$data[[3]]$hoverinfo="none"
-			p$x$data[[4]]$hoverinfo="none"
-			p
-
-
-		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]) {
-
-		  df <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                         input$height, input$oco, input$tio)$df
-
-			p <- ggplotly(ggplot(df, aes(Time, FEV1)) + geom_line(aes(y = FEV1), color="black", linetype=1) +
-			                 geom_ribbon(aes(ymin=FEV1_lower, ymax=FEV1_upper), linetype=2, alpha=0.1) +
-			                 geom_line(aes(y = FEV1_lower), color=errorLineColor, linetype=2) +
-			                 geom_line(aes(y = FEV1_upper), color=errorLineColor, linetype=2) +
-			                 annotate("text", 1, 3.52, label="Mean FEV1 decline", colour="black", size=4, hjust=0) +
-			                 annotate("text", 1.15, 3.4, label=coverageInterval, colour=errorLineColor, size=4, hjust=0) +
-			                 labs(x=xlab, y=ylab) +
-			                 theme_bw(), tooltip=c('x','y')) %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
-			p$x$data[[1]]$text <- paste0("Time (years): ", df$Time, "<br />", "FEV1 (L): ", round(df$FEV1,3),
-			                             "<br />FEv1 lower (L): ", round(df$FEV1_lower,3), "<br />FEV1 upper (L): ",
-			                             round(df$FEV1_upper),3)
-			p$x$data[[3]]$hoverinfo="none"
-			p$x$data[[4]]$hoverinfo="none"
-			p
-
-
-
-		}
 
 	})
 
 	output$cv<-renderTable({
 
-		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
-
-      aa1 <- fev1_projection(input$fev1_0, input$int_effect, input$tio)$aa1
+      aa1 <- data()$aa1
 			rownames(aa1)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
 			                 "Coefficient of Variation (CV) (%)")
 			colnames(aa1)<- years
 
 			return(aa1)
-
-		} else if (!is.null(input$age) & input$model==modelOptions[2]){
-
-		  aa2 <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                          input$height, input$oco, input$tio)$aa2
-		  rownames(aa2)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
-		                   "Coefficient of Variation (CV) (%)")
-		  colnames(aa2)<- years
-
-			return(aa2)
-
-
-		} else if (!is.null(input$age) & input$model==modelOptions[3]){
-
-      aa3 <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-                              input$height, input$tio)$aa3
-
-			rownames(aa3)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
-			                 "Coefficient of Variation (CV) (%)")
-			colnames(aa3)<- years
-
-			return(aa3)
-
-
-		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]){
-
-		  aa4 <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
-		                          input$age, input$weight, input$height, input$oco, input$tio)$aa4
-
-		  rownames(aa4)<-c("Mean FEV1", "95% credible interval-upper bound", "95% credible interval-lower bound",
-		                   "Coefficient of Variation (CV) (%)")
-		  colnames(aa4)<- years
-
-		  return(aa4)
-		}
 	},
 
-	include.rownames=T,
-	caption="FEV1 Heterogeneity",
-	caption.placement = getOption("xtable.caption.placement", "top"))
+	  include.rownames=T,
+	  caption="FEV1 Heterogeneity",
+	  caption.placement = getOption("xtable.caption.placement", "top"))
 
 	output$prob_decliner<-renderText({
 
-		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
-
-      bb1 <- fev1_projection(input$fev1_0, input$int_effect, input$tio)$bb1
+      bb1 <- data()$bb1
 			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years
 			  (declines more than 40 ml/year): '
       bb1 <- paste0(prob_text, as.numeric(bb1), "%")
 			return(bb1)
-
-		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
-
-		  bb2 <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                         input$height, input$oco, input$tio)$bb2
-
-		  prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years
-			              (declines more than 40 ml/year): '
-			bb2 <- paste0(prob_text, as.numeric(bb2), "%")
-
-			return(bb2)
-
-
-		} else if (!is.null(input$age) & input$model==modelOptions[3]){
-
-		  bb3 <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                          input$height, input$tio)$bb3
-
-			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years
-			(declines more than 40 ml/year): '
-			bb3 <- paste0(prob_text, as.numeric(bb3), "%")
-
-			return(bb3)
-
-		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]){
-
-		  bb4 <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
-		                          input$age, input$weight, input$height, input$oco, input$tio)$bb4
-
-			prob_text <- 'Probability that this patient will be a rapid decliner over the next 11 years
-			  (declines more than 40 ml/year): '
-			bb4 <- paste0(prob_text, as.numeric(bb4), "%")
-			return(bb4)
-		}
 	})
 
 	output$severity<-renderPlotly({
 
-		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
+		  if(data()$options==1){
+		    gender<-1
+		    age_x<-55
+		    height_x<-1.7
+		  } else {
+		    if (input$sex=="male"){
+		      gender<-1
+		    } else if (input$sex=="female"){
+		      gender<-0
+		    }
+		    age_x <- input$age
+		    height_x <- input$height
+		  }
 
-			gender<-1
-			age_x<-55
-			height_x<-1.7
-			x<-c(0:11)
+      if(data()$options==4){
+        x<-c(-1:11)
+        rnames <-	c('Previous','Baseline', years)
+      } else {
+			  x<-c(0:11)
+			  rnames <- c('Baseline', years)
+      }
 
-			df <- fev1_projection(input$fev1_0, input$int_effect, input$tio)$df
+	  print("testing")
+
+			df <- data()$df
 			fev1_avg <- df$FEV1
 			fev1_low <- df$FEV1_lower
 			fev1_up <- df$FEV1_upper
 
+
+
 			fev_pred<-(0.5536 + -0.01303*(age_x+x) + -0.000172*(age_x+x)^2 + 0.00014098*(height_x*100)^2)*gender +
 						(0.4333 + -0.00361*(age_x+x) + -0.000194*(age_x+x)^2 + 0.00011496*(height_x*100)^2)*(1-gender)
+			print("testing2")
 
 			p_mild<-round((1-pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
 			p_moderate<-round((pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96)-pnorm(0.5, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
       p_severe<-100-p_mild-p_moderate
 
-      u1<-matrix(0,nrow=12,ncol=4)
-      u1[,1]<-c(0:11)
+
+      u1<-matrix(0,nrow=length(x),ncol=4)
+      u1[,1]<-x
       u1[,2]<-p_mild
       u1[,3]<-p_moderate
       u1[,4]<-p_severe
       colnames(u1)<-c("year","mild", "moderate", "severe")
-      rownames(u1)<- c('Baseline', years)
+      rownames(u1)<- rnames
       print(u1)
       data <- as.data.frame(u1)
 
@@ -465,266 +343,55 @@ server <- (function(input, output, session) {
 
     print(p)
 
-
-		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
-
-		  df <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                          input$height, input$oco, input$tio)$df
-
-		  fev1_avg <- df$FEV1
-		  fev1_low <- df$FEV1_lower
-		  fev1_up <- df$FEV1_upper
-		  x<-c(0:11)
-
-		  if (input$sex=="male"){
-		    gender<-1
-		  } else if (input$sex=="female"){
-		    gender<-0
-		  }
-
-			fev_pred<-(0.5536 + -0.01303*(input$age+x) + -0.000172*(input$age+x)^2 + 0.00014098*(input$height*100)^2)*gender +
-						(0.4333 + -0.00361*(input$age+x) + -0.000194*(input$age+x)^2 + 0.00011496*(input$height*100)^2)*(1-gender)
-
-			p_mild<-round((1-pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_moderate<-round((pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96)-pnorm(0.5, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_severe<-100-p_mild-p_moderate
-
-			u1<-matrix(0,nrow=12,ncol=4)
-			u1[,1]<-c(0:11)
-			u1[,2]<-p_mild
-			u1[,3]<-p_moderate
-			u1[,4]<-p_severe
-			colnames(u1)<-c("year","mild", "moderate", "severe")
-			rownames(u1)<-c('Baseline', years)
-			print(u1)
-			data <- as.data.frame(u1)
-
-			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild', marker = list(color = toRGB("#009E73"))) %>%
-			  add_trace(y = ~moderate, name='Moderate', marker = list(color = toRGB("#E69F00"))) %>%
-			  add_trace(y = ~severe, name='Severe', marker = list(color = toRGB("#D55E00"))) %>%
-			  layout(yaxis=list(title='Probability (%)'), barmode='stack',
-			         xaxis=list(title='Year', type='category', categoryorder='trace'),
-			         title='Probability of the selected patient being at each GOLD grade',
-			         hovermode='x') %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
-
-
-		} else if (!is.null(input$age) & input$model==modelOptions[3]){
-
-		  df <- fev1_projection3(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                          input$height, input$tio)$df
-
-		  fev1_avg <- df$FEV1
-		  fev1_low <- df$FEV1_lower
-		  fev1_up <- df$FEV1_upper
-		  x<-c(0:11)
-
-		  if (input$sex=="male"){
-		    gender<-1
-		  } else if (input$sex=="female"){
-		    gender<-0
-		  }
-
-
-			fev_pred<-(0.5536 + -0.01303*(input$age+x) + -0.000172*(input$age+x)^2 + 0.00014098*(input$height*100)^2)*gender +
-						(0.4333 + -0.00361*(input$age+x) + -0.000194*(input$age+x)^2 + 0.00011496*(input$height*100)^2)*(1-gender)
-
-			p_mild<-round((1-pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_moderate<-round((pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96)-pnorm(0.5, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_severe<-100-p_mild-p_moderate
-
-			u1<-matrix(0,nrow=12,ncol=4)
-			u1[,1]<-c(0:11)
-			u1[,2]<-p_mild
-			u1[,3]<-p_moderate
-			u1[,4]<-p_severe
-			colnames(u1)<-c("year","mild", "moderate", "severe")
-			rownames(u1)<-c('Baseline', years)
-			print(u1)
-			data <- as.data.frame(u1)
-
-			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild', marker = list(color = toRGB("#009E73"))) %>%
-			  add_trace(y = ~moderate, name='Moderate', marker = list(color = toRGB("#E69F00"))) %>%
-			  add_trace(y = ~severe, name='Severe', marker = list(color = toRGB("#D55E00"))) %>%
-			  layout(yaxis=list(title='Probability (%)'), barmode='stack',
-			         xaxis=list(title='Year',type='category', categoryorder='trace'),
-			         title='Probability of the selected patient being at each GOLD grade',
-			         hovermode='x') %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
-
-			print(p)
-
-
-		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]) {
-
-		  df <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
-		                          input$age, input$weight, input$height, input$oco, input$tio)$df
-
-		  fev1_avg <- df$FEV1
-		  fev1_low <- df$FEV1_lower
-		  fev1_up <- df$FEV1_upper
-		  x<-c(-1:11)
-
-			if (input$sex=="male"){
-				gender<-1
-			} else if (input$sex=="female"){
-				gender<-0
-			}
-
-			fev_pred<-(0.5536 + -0.01303*(input$age+x) + -0.000172*(input$age+x)^2 + 0.00014098*(input$height*100)^2)*gender +
-						(0.4333 + -0.00361*(input$age+x) + -0.000194*(input$age+x)^2 + 0.00011496*(input$height*100)^2)*(1-gender)
-
-			p_mild<-round((1-pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_moderate<-round((pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96)-pnorm(0.5, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_severe<-100-p_mild-p_moderate
-
-			u1<-matrix(0,nrow=13,ncol=4)
-			u1[,1]<-c(-1:11)
-			u1[,2]<-p_mild
-			u1[,3]<-p_moderate
-			u1[,4]<-p_severe
-			colnames(u1)<-c("year","mild", "moderate", "severe")
-			rownames(u1)<-c('Previous','Baseline', years)
-			print(u1)
-			data <- as.data.frame(u1)
-			print(data)
-
-			p <- plot_ly(data, x= ~year, y = ~mild, type='bar', name='Mild', marker = list(color = toRGB("#009E73"))) %>%
-			  add_trace(y = ~moderate, name='Moderate', marker = list(color = toRGB("#E69F00"))) %>%
-			  add_trace(y = ~severe, name='Severe', marker = list(color = toRGB("#D55E00"))) %>%
-			  layout(yaxis=list(title='Probability (%)'), barmode='stack',
-			         xaxis=list(title='Year', type='category', categoryorder='trace'),
-			         title='Probability of the selected patient being at each GOLD grade',
-			         hovermode='x') %>% config(displaylogo=F, modeBarButtonsToRemove=buttonremove)
-
-			print(p)
-		}
 	})
 
 
 	output$sevTab<-renderTable({
 
-		if (!is.null(input$fev1_0) & input$model==modelOptions[1]) {
 
-			gender<-1
-			age_x<-55
-			height_x<-1.7
-			x<-c(0:11)
+	  if(data()$options==1){
+	    gender<-1
+	    age_x<-55
+	    height_x<-1.7
+	  } else {
+	    if (input$sex=="male"){
+	      gender<-1
+	    } else if (input$sex=="female"){
+	      gender<-0
+	    }
+	    age_x <- input$age
+	    height_x <- input$height
+	  }
 
-			df <- fev1_projection(input$fev1_0, input$int_effect, input$tio)$df
-			fev1_avg <- df$FEV1
-			fev1_low <- df$FEV1_lower
-			fev1_up <- df$FEV1_upper
+	  if(data()$options==4){
+	    x<-c(-1:11)
+	    cnames <-	c('Previous','Baseline', years)
+	  } else {
+	    x<-c(0:11)
+	    cnames <- c('Baseline', years)
+	  }
 
-			fev_pred<-(0.5536 + -0.01303*(age_x+x) + -0.000172*(age_x+x)^2 + 0.00014098*(height_x*100)^2)*gender +
-						(0.4333 + -0.00361*(age_x+x) + -0.000194*(age_x+x)^2 + 0.00011496*(height_x*100)^2)*(1-gender)
+	  df <- data()$df
+	  fev1_avg <- df$FEV1
+	  fev1_low <- df$FEV1_lower
+	  fev1_up <- df$FEV1_upper
 
-			p_mild<-round((1-pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_moderate<-round((pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96)-pnorm(0.5, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_severe<-100-p_mild-p_moderate
+	  fev_pred<-(0.5536 + -0.01303*(age_x+x) + -0.000172*(age_x+x)^2 + 0.00014098*(height_x*100)^2)*gender +
+	    (0.4333 + -0.00361*(age_x+x) + -0.000194*(age_x+x)^2 + 0.00011496*(height_x*100)^2)*(1-gender)
 
-			u1<-matrix(0,nrow=3,ncol=12)
-			u1[1,]<-p_mild
-			u1[2,]<-p_moderate
-			u1[3,]<-p_severe
-			rownames(u1)<-c("Probability of being mild", "Probability of being moderate", "Probability of being severe")
-			colnames(u1)<-c('Baseline', years)
-			print(u1)
-			return(u1)
+	  p_mild<-round((1-pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
+	  p_moderate<-round((pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96)-pnorm(0.5, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
+	  p_severe<-100-p_mild-p_moderate
 
-		} else if (!is.null(input$age) & input$model==modelOptions[2]) {
+	  u1<-matrix(0,nrow=3, ncol=length(x))
+	  u1[1,]<-p_mild
+	  u1[2,]<-p_moderate
+	  u1[3,]<-p_severe
 
-		  df <- fev1_projection2(input$fev1_0, input$int_effect, sex=input$sex, smoking=input$smoking, input$age, input$weight,
-		                         input$height, input$oco, input$tio)$df
+	  colnames(u1)<- cnames
+	  rownames(u1)<-c("Probability of being mild", "Probability of being moderate", "Probability of being severe")
+	  return(u1)
 
-		  fev1_avg <- df$FEV1
-		  fev1_low <- df$FEV1_lower
-		  fev1_up <- df$FEV1_upper
-		  x<-c(0:11)
-
-		  if (input$sex=="male"){
-		    gender<-1
-		  } else if (input$sex=="female"){
-		    gender<-0
-		  }
-
-			fev_pred<-(0.5536 + -0.01303*(input$age+x) + -0.000172*(input$age+x)^2 + 0.00014098*(input$height*100)^2)*gender +
-						(0.4333 + -0.00361*(input$age+x) + -0.000194*(input$age+x)^2 + 0.00011496*(input$height*100)^2)*(1-gender)
-
-			p_mild<-round((1-pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_moderate<-round((pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96)-pnorm(0.5, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_severe<-100-p_mild-p_moderate
-
-			u2<-matrix(0,nrow=3,ncol=12)
-			u2[1,]<-p_mild
-			u2[2,]<-p_moderate
-			u2[3,]<-p_severe
-			rownames(u2)<-c("Probability of being mild", "Probability of being moderate", "Probability of being severe")
-			colnames(u2)<- c('Baseline', years)
-
-		} else if (!is.null(input$age) & input$model==modelOptions[3]) {
-
-
-		  df <- fev1_projection3(fev1_0=input$fev1_0, int_effect=input$int_effect, sex=input$sex, smoking=input$smoking,
-		                         age=input$age, weight=input$weight, height=input$height, input$tio)$df
-
-		  fev1_avg <- df$FEV1
-		  fev1_low <- df$FEV1_lower
-		  fev1_up <- df$FEV1_upper
-		  x<-c(0:11)
-
-			if (input$sex=="male"){
-				gender<-1
-			} else if (input$sex=="female"){
-				gender<-0
-			}
-
-
-			fev_pred<-(0.5536 + -0.01303*(input$age+x) + -0.000172*(input$age+x)^2 + 0.00014098*(input$height*100)^2)*gender +
-						(0.4333 + -0.00361*(input$age+x) + -0.000194*(input$age+x)^2 + 0.00011496*(input$height*100)^2)*(1-gender)
-
-			p_mild<-round((1-pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_moderate<-round((pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96)-pnorm(0.5, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_severe<-100-p_mild-p_moderate
-
-
-			u3<-matrix(0,nrow=3,ncol=12)
-			u3[1,]<-p_mild
-			u3[2,]<-p_moderate
-			u3[3,]<-p_severe
-			rownames(u3)<-c("Probability of being mild", "Probability of being moderate", "Probability of being severe")
-			colnames(u3)<-c('Baseline', years)
-			return(u3)
-
-		} else if (!is.null(input$fev1_prev) & input$model==modelOptions[4]) {
-
-			df <- fev1_projection4(input$fev1_0, input$fev1_prev, input$int_effect, sex=input$sex, smoking=input$smoking,
-			                       input$age, input$weight, input$height, input$oco, input$tio)$df
-
-			fev1_avg <- df$FEV1
-			fev1_low <- df$FEV1_lower
-			fev1_up <- df$FEV1_upper
-			x<-c(-1:11)
-
-			if (input$sex=="male") {
-				gender<-1
-			} else if (input$sex=="female") {
-				gender<-0
-			}
-
-			fev_pred<-(0.5536 + -0.01303*(input$age+x) + -0.000172*(input$age+x)^2 + 0.00014098*(input$height*100)^2)*gender +
-						(0.4333 + -0.00361*(input$age+x) + -0.000194*(input$age+x)^2 + 0.00011496*(input$height*100)^2)*(1-gender)
-
-			p_mild<-round((1-pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_moderate<-round((pnorm(0.8, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96)-pnorm(0.5, fev1_avg/fev_pred, (fev1_up/fev_pred-fev1_avg/fev_pred)/1.96))*100,0)
-			p_severe<-100-p_mild-p_moderate
-
-			u4<-matrix(0,nrow=3,ncol=13)
-			u4[1,]<-p_mild
-			u4[2,]<-p_moderate
-			u4[3,]<-p_severe
-			rownames(u4)<-c("Probability of being mild", "Probability of being moderate", "Probability of being severe")
-			colnames(u4)<-c('Previous year', 'Baseline', years)
-			return(u4)
-		}
 	},
 	include.rownames=T)
 })
